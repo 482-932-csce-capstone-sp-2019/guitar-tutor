@@ -32,6 +32,17 @@ def clearLights(note = -1):
     arduino.write(byt)
     return checkBackwards()
 
+def cl(note = -1):
+    # Clears all lights
+    #a.waitForOnset(note)
+    #input("Wait")
+    #print("test")
+
+    n = int("0",2)
+    byt = bytes([n])
+    arduino.write(byt)
+    return checkBackwards()
+
 def checkBackwards():
     if pressed == True:
         return -1

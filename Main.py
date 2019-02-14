@@ -19,11 +19,13 @@ def main():
     while True:
         mode = input("Would you like to learn a chord or play a tab?(Chord/Tab/Quit)")
         mode = mode.lower()
-        if mode == "tab":
+        if mode == "tab" or mode == "t":
             song = parser()
             lightGuitar(song)
-        elif mode == "chord":
+        elif mode == "chord" or mode == "c":
             chords()
+        elif mode == "cl":
+            cl(note = -1)
         elif mode == "quit":
             print("Thanks for playing!")
             break
