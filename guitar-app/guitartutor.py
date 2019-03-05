@@ -9,6 +9,9 @@ Gerardo Mares II Notes:
 	
 '''
 
+import random
+import time
+
 # Used to get directory to different 'screens'
 from os.path import dirname, join
 # Defalut kivy app object, we need this to make kivy work
@@ -51,9 +54,27 @@ class GuitarApp(App):
 	# Title of current screen
 	current_title = StringProperty()
 
+	# Used in chord library
+	# Displays the given chord on the guitar
 	def displayChord(self, chord):
 		cl()
 		chords(chord)
+
+	def getRandomChord(self):
+		possibleChords = ["a","a7","am","am7","amaj7","bf","b7","bm","c","c7","cmaj7","d","dm","d7","dm7","dmaj7","e","e7","em","em7","f","fmaj7","g","g7"]
+		return random.choice(possibleChords)
+
+
+	def playSimonSays(self):
+		chordsSoFar = []
+
+		while (True):
+			chordsSoFar.append(self.getRandomChord())
+			for c in chordsSoFar:
+				self.displayChord(c)
+				time.sleep(1)
+
+
 	
 	def build(self):
 		# Title of window
@@ -74,8 +95,7 @@ class GuitarApp(App):
 		self.go_screen(0)
 	
 	def go_screen(self, idx):
-		if(idx == 0):
-			cl()
+		cl()
 		if(self.index != idx):
 			self.index = idx
 			self.root.ids.sm.switch_to(self.load_screen(idx), direction="left")
