@@ -10,8 +10,24 @@ from SoundDriver import NoteRecognizer
 
 a = NoteRecognizer()
 
-arduino = serial.Serial('COM4', 9600)
+
 pressed = False
+
+def findArduino():
+    possiblePorts = ['COM1', 'COM2', 'COM3', 'COM4', 'COM5', 'COM6']
+    arduino = 0
+    for p in possiblePorts:
+        try :
+            arduino = serial.Serial(p, 9600)
+            break
+        except:
+            arduino = 0
+    if arduino == 0:
+        print('Could not find arduino, exiting')
+        exit()
+    return arduino
+
+arduino = findArduino()
 
 def onOffFunction(fret, string):
     # This creates the full binary string we are going to use and converts it to a byte which will light the light.
