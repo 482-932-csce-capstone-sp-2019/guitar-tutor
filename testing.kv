@@ -1,0 +1,15 @@
+#:kivy 1.10.1
+
+<TestingW>:
+    btn: but
+
+    canvas:
+        Rectangle:
+            pos: self.pos
+            size: 
+    Button:
+        id: but
+        size: 200, 200
+        text: "pp"
+        center: self.parent.center
+        on_press: app.foo()
