@@ -20,6 +20,18 @@ from kivy.uix.screenmanager import Screen
 # Use builder to run kivy code inside of python
 from kivy.lang import Builder
 
+import os, sys
+a = os.path.abspath(os.path.join('.','../Arduino'))
+sys.path.append(a)
+b = os.path.abspath(os.path.join('.', '../Parsing'))
+sys.path.append(b)
+c = os.path.abspath(os.path.join('.','../Note Recognition, etc'))
+sys.path.append(c)
+
+from Lights import *
+from Parser import *
+from Chords import *
+
 # This will be the class representing each screen
 # There is currently no logic in each screen
 class GuitarScreen(Screen):
@@ -38,6 +50,10 @@ class GuitarApp(App):
 	screen_names = ListProperty([])
 	# Title of current screen
 	current_title = StringProperty()
+
+	def displayChord(self, chord):
+		cl()
+		chords(chord)
 	
 	def build(self):
 		# Title of window
@@ -58,6 +74,8 @@ class GuitarApp(App):
 		self.go_screen(0)
 	
 	def go_screen(self, idx):
+		if(idx == 0):
+			cl()
 		if(self.index != idx):
 			self.index = idx
 			self.root.ids.sm.switch_to(self.load_screen(idx), direction="left")

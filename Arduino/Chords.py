@@ -7,9 +7,7 @@ sys.path.insert(0, 'C:/School/CSCE 482/GUITARTUTOR/Arduino')
 
 from Lights import *
 
-def chords():
-    chord = input("Choose a chord: ")
-    chord.lower()
+def chords(chord):
     if chord == "a":
         a()
     elif chord == "a7":
@@ -34,6 +32,8 @@ def chords():
         c()
     elif chord == "d":
         d() 
+    elif chord == "dm":
+        dm()
     elif chord == "d7":
         d7()
     elif chord == "dm7":
