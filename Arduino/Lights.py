@@ -8,7 +8,7 @@ sys.path.append(lib_path)
 
 from SoundDriver import NoteRecognizer
 
-a = NoteRecognizer()
+a1 = NoteRecognizer()
 
 
 pressed = False
@@ -39,7 +39,7 @@ def onOffFunction(fret, string):
 
 def clearLights(note = -1):
     # Clears all lights
-    a.waitForOnset(note)
+    a1.waitForOnset(note)
     #input("Wait")
     #print("test")
 
@@ -67,7 +67,7 @@ def checkBackwards():
 
 # Loops through the data structure and lights the appropriate lights.
 def lightGuitar(song):
-    a.s.start()
+    a1.s.start()
     onLights = []
     clear = False
     for measure in range(101):
@@ -124,6 +124,6 @@ def lightGuitar(song):
             else: 
                 note += 1
     #print("You got %f of the notes correct." % (float(a.correctNotes)/float(a.totalNotes)))
-    a.s.stop()
+    a1.s.stop()
 # onOffFunction('{0:05b}'.format(1), '{0:03b}'.format(3))
 time.sleep(2) #waiting the initialization...

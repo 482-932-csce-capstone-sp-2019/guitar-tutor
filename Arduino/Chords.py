@@ -29,7 +29,7 @@ def chords(chord):
     elif chord == "c7":
         c7()
     elif chord == "cmaj7":
-        c()
+        cmaj7()
     elif chord == "d":
         d() 
     elif chord == "dm":
@@ -60,238 +60,170 @@ def chords(chord):
         "Chord not known"
 
 def a():
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(1))
     onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(2))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(3))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(4))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(5))
-    onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(2))
+    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(6))
     onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(3))
     onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(4))
+    onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(5))
 
 def a7():
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(1))
     onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(2))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(3))
+    onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(3))
     onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(4))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(5))
-    onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(2))
-    onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(4))
+    onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(5))
+    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(6))
 
 def am():
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(1))
     onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(2))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(3))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(4))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(5))
-    onOffFunction('{0:05b}'.format(1), '{0:03b}'.format(2))
     onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(3))
     onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(4))
+    onOffFunction('{0:05b}'.format(1), '{0:03b}'.format(5))
+    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(6))
 
 def am7():
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(1))
     onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(2))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(3))
+    onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(3))
     onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(4))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(5))
-    onOffFunction('{0:05b}'.format(1), '{0:03b}'.format(2))
-    onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(4))
+    onOffFunction('{0:05b}'.format(1), '{0:03b}'.format(5))
+    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(6))
 
 def amaj7():
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(1))
     onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(2))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(3))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(4))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(5))
-    onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(2))
-    onOffFunction('{0:05b}'.format(1), '{0:03b}'.format(3))
-    onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(4))
-
-def bf():
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(2))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(3))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(4))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(5))
-    onOffFunction('{0:05b}'.format(3), '{0:03b}'.format(2))
-    onOffFunction('{0:05b}'.format(3), '{0:03b}'.format(3))
-    onOffFunction('{0:05b}'.format(3), '{0:03b}'.format(4))
-    onOffFunction('{0:05b}'.format(1), '{0:03b}'.format(5))
-
-def b7():
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(1))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(2))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(3))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(4))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(5))
-    onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(1))
     onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(3))
     onOffFunction('{0:05b}'.format(1), '{0:03b}'.format(4))
     onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(5))
+    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(6))
 
-def bm():
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(2))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(3))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(4))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(5))
-    onOffFunction('{0:05b}'.format(3), '{0:03b}'.format(2))
-    onOffFunction('{0:05b}'.format(4), '{0:03b}'.format(3))
-    onOffFunction('{0:05b}'.format(4), '{0:03b}'.format(4))
-    onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(5))
-
-def c():
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(1))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(2))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(3))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(4))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(5))
-    onOffFunction('{0:05b}'.format(1), '{0:03b}'.format(2))
-    onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(4))
-    onOffFunction('{0:05b}'.format(3), '{0:03b}'.format(5))
-
-def c7():
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(1))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(2))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(3))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(4))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(5))
+def bf():
     onOffFunction('{0:05b}'.format(1), '{0:03b}'.format(2))
     onOffFunction('{0:05b}'.format(3), '{0:03b}'.format(3))
-    onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(4))
+    onOffFunction('{0:05b}'.format(3), '{0:03b}'.format(4))
     onOffFunction('{0:05b}'.format(3), '{0:03b}'.format(5))
+
+def b7():
+    onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(2))
+    onOffFunction('{0:05b}'.format(1), '{0:03b}'.format(3))
+    onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(4))
+    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(5))
+    onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(6))
+
+def bm():
+    onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(2))
+    onOffFunction('{0:05b}'.format(4), '{0:03b}'.format(3))
+    onOffFunction('{0:05b}'.format(4), '{0:03b}'.format(4))
+    onOffFunction('{0:05b}'.format(3), '{0:03b}'.format(5))
+
+def c():
+    onOffFunction('{0:05b}'.format(3), '{0:03b}'.format(2))
+    onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(3))
+    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(4))
+    onOffFunction('{0:05b}'.format(1), '{0:03b}'.format(5))
+    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(6))
+
+def c7():
+    onOffFunction('{0:05b}'.format(3), '{0:03b}'.format(2))
+    onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(3))
+    onOffFunction('{0:05b}'.format(3), '{0:03b}'.format(4))
+    onOffFunction('{0:05b}'.format(1), '{0:03b}'.format(5))
+    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(6))
 
 def cmaj7():
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(1))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(2))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(3))
+    onOffFunction('{0:05b}'.format(3), '{0:03b}'.format(2))
+    onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(3))
     onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(4))
     onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(5))
-    onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(4))
-    onOffFunction('{0:05b}'.format(3), '{0:03b}'.format(5))
+    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(6))
 
 def d():
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(1))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(2))
     onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(3))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(4))
-    onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(1))
-    onOffFunction('{0:05b}'.format(3), '{0:03b}'.format(2))
-    onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(3))
+    onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(4))
+    onOffFunction('{0:05b}'.format(3), '{0:03b}'.format(5))
+    onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(6))
 
 def d7():
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(1))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(2))
     onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(3))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(4))
-    onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(1))
-    onOffFunction('{0:05b}'.format(1), '{0:03b}'.format(2))
-    onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(3))
+    onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(4))
+    onOffFunction('{0:05b}'.format(1), '{0:03b}'.format(5))
+    onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(6))
 
 def dm():
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(1))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(2))
     onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(3))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(4))
-    onOffFunction('{0:05b}'.format(1), '{0:03b}'.format(1))
-    onOffFunction('{0:05b}'.format(3), '{0:03b}'.format(2))
-    onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(3))
+    onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(4))
+    onOffFunction('{0:05b}'.format(3), '{0:03b}'.format(5))
+    onOffFunction('{0:05b}'.format(1), '{0:03b}'.format(6))
 
 def dm7():
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(1))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(2))
     onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(3))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(4))
-    onOffFunction('{0:05b}'.format(1), '{0:03b}'.format(1))
-    onOffFunction('{0:05b}'.format(1), '{0:03b}'.format(2))
-    onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(3))
+    onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(4))
+    onOffFunction('{0:05b}'.format(1), '{0:03b}'.format(5))
+    onOffFunction('{0:05b}'.format(1), '{0:03b}'.format(6))
 
 def dmaj7():
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(1))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(2))
     onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(3))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(4))
-    onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(1))
-    onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(2))
-    onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(3))
+    onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(4))
+    onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(5))
+    onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(6))
 
 def e():
     onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(1))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(2))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(3))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(4))
+    onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(2))
+    onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(3))
+    onOffFunction('{0:05b}'.format(1), '{0:03b}'.format(4))
     onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(5))
     onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(6))
-    onOffFunction('{0:05b}'.format(1), '{0:03b}'.format(3))
-    onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(4))
-    onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(5))
 
 def e7():
     onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(1))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(2))
+    onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(2))
     onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(3))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(4))
+    onOffFunction('{0:05b}'.format(1), '{0:03b}'.format(4))
     onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(5))
     onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(6))
-    onOffFunction('{0:05b}'.format(1), '{0:03b}'.format(3))
-    onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(5))
 
 def em():
     onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(1))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(2))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(3))
+    onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(2))
+    onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(3))
     onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(4))
     onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(5))
     onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(6))
-    onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(4))
-    onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(5))
 
 def em7():
     onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(1))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(2))
+    onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(2))
     onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(3))
     onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(4))
     onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(5))
     onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(6))
-    onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(5))
 
 def f():
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(1))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(2))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(3))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(4))
     onOffFunction('{0:05b}'.format(1), '{0:03b}'.format(1))
-    onOffFunction('{0:05b}'.format(1), '{0:03b}'.format(2))
-    onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(3))
-    onOffFunction('{0:05b}'.format(3), '{0:03b}'.format(4))
+    onOffFunction('{0:05b}'.format(3), '{0:03b}'.format(2))
+    onOffFunction('{0:05b}'.format(3), '{0:03b}'.format(3))
+    onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(4))
+    onOffFunction('{0:05b}'.format(1), '{0:03b}'.format(5))
+    onOffFunction('{0:05b}'.format(1), '{0:03b}'.format(6))
 
 def fmaj7():
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(1))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(2))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(3))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(4))
-    onOffFunction('{0:05b}'.format(1), '{0:03b}'.format(2))
-    onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(3))
-    onOffFunction('{0:05b}'.format(3), '{0:03b}'.format(4))
+    onOffFunction('{0:05b}'.format(3), '{0:03b}'.format(3))
+    onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(4))
+    onOffFunction('{0:05b}'.format(1), '{0:03b}'.format(5))
+    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(6))
 
 def g():
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(1))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(2))
+    onOffFunction('{0:05b}'.format(3), '{0:03b}'.format(1))
+    onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(2))
     onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(3))
     onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(4))
     onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(5))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(6))
-    onOffFunction('{0:05b}'.format(3), '{0:03b}'.format(1))
-    onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(5))
     onOffFunction('{0:05b}'.format(3), '{0:03b}'.format(6))
 
 def g7():
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(1))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(2))
+    onOffFunction('{0:05b}'.format(3), '{0:03b}'.format(1))
+    onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(2))
     onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(3))
     onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(4))
     onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(5))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(6))
-    onOffFunction('{0:05b}'.format(1), '{0:03b}'.format(1))
-    onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(5))
-    onOffFunction('{0:05b}'.format(3), '{0:03b}'.format(6))
+    onOffFunction('{0:05b}'.format(1), '{0:03b}'.format(6))
 
 #chords()
