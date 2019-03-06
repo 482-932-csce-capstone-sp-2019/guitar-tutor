@@ -8,10 +8,26 @@ sys.path.append(lib_path)
 
 from SoundDriver import NoteRecognizer
 
-a = NoteRecognizer()
+a1 = NoteRecognizer()
 
-arduino = serial.Serial('COM4', 9600)
+
 pressed = False
+
+def findArduino():
+    possiblePorts = ['COM1', 'COM2', 'COM3', 'COM4', 'COM5', 'COM6']
+    arduino = 0
+    for p in possiblePorts:
+        try :
+            arduino = serial.Serial(p, 9600)
+            break
+        except:
+            arduino = 0
+    if arduino == 0:
+        print('Could not find arduino, exiting')
+        exit()
+    return arduino
+
+arduino = findArduino()
 
 def onOffFunction(fret, string):
     # This creates the full binary string we are going to use and converts it to a byte which will light the light.
@@ -23,7 +39,7 @@ def onOffFunction(fret, string):
 
 def clearLights(note = -1):
     # Clears all lights
-    a.waitForOnset(note)
+    a1.waitForOnset(note)
     #input("Wait")
     #print("test")
 
@@ -51,7 +67,7 @@ def checkBackwards():
 
 # Loops through the data structure and lights the appropriate lights.
 def lightGuitar(song):
-    a.s.start()
+    a1.s.start()
     onLights = []
     clear = False
     for measure in range(101):
@@ -108,6 +124,6 @@ def lightGuitar(song):
             else: 
                 note += 1
     #print("You got %f of the notes correct." % (float(a.correctNotes)/float(a.totalNotes)))
-    a.s.stop()
+    a1.s.stop()
 # onOffFunction('{0:05b}'.format(1), '{0:03b}'.format(3))
 time.sleep(2) #waiting the initialization...
