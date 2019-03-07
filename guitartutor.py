@@ -36,15 +36,15 @@ from kivy.uix.popup import Popup
 
 import os, sys
 a = os.path.abspath(os.path.join('.','Arduino'))
-sys.path.append(a)
+#sys.path.append(a)
 b = os.path.abspath(os.path.join('.', 'Parsing'))
-sys.path.append(b)
+#sys.path.append(b)
 c = os.path.abspath(os.path.join('.','Note Recognition, etc'))
-sys.path.append(c)
+#sys.path.append(c)
 
-from Lights import *
-from Parser import *
-from Chords import *
+#from Lights import *
+#from Parser import *
+#from Chords import *
 
 # This is the function that listens to the dynamic buttons
 # When a button is pressed this function is called with the 
@@ -156,7 +156,7 @@ class GuitarApp(App):
 		self.go_screen(0)
 
 	def go_screen(self, idx):
-		cl()
+		#cl()
 		if(self.index != idx):
 			self.index = idx
 			self.root.ids.sm.switch_to(self.load_screen(idx), direction="left")
