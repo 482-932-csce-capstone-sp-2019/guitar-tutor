@@ -118,7 +118,7 @@ class GuitarApp(App):
 	# Used in chord library
 	# Displays the given chord on the guitar
 	def displayChord(self, chord):
-		cl()2
+		cl()
 		chords(chord)
 
 	def getRandomChord(self):
