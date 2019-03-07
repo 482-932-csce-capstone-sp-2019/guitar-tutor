@@ -35,11 +35,11 @@ from kivy.factory import Factory
 from kivy.uix.popup import Popup
 
 import os, sys
-a = os.path.abspath(os.path.join('.','../Arduino'))
+a = os.path.abspath(os.path.join('.','Arduino'))
 sys.path.append(a)
-b = os.path.abspath(os.path.join('.', '../Parsing'))
+b = os.path.abspath(os.path.join('.', 'Parsing'))
 sys.path.append(b)
-c = os.path.abspath(os.path.join('.','../Note Recognition, etc'))
+c = os.path.abspath(os.path.join('.','Note Recognition, etc'))
 sys.path.append(c)
 
 from Lights import *

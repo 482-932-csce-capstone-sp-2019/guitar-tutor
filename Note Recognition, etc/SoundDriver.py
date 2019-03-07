@@ -19,7 +19,7 @@ hop_s = 1024  // downsample # hop size
 def getNoteDict():
 	notelist = []
 
-	file = open("../noteslist.txt", "r")
+	file = open("noteslist.txt", "r")
 	for line in file:
 		x = line.split()
 		notelist.append(float(x[1]))
