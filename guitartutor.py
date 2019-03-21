@@ -40,19 +40,21 @@ from kivy.core.window import Window
 import sys
 import shutil
 a = os.path.abspath(os.path.join('.','Arduino'))
-#sys.path.append(a)
+sys.path.append(a)
 b = os.path.abspath(os.path.join('.', 'Parsing'))
-#sys.path.append(b)
-c = os.path.abspath(os.path.join('.','Note Recognition, etc'))
-#sys.path.append(c)
+sys.path.append(b)
+c = os.path.abspath(os.path.join('.', 'Note Recognition, etc'))
+sys.path.append(c)
+d = os.path.abspath(os.path.join('.', 'data'))
+sys.path.append(d)
 
-#from Lights import *
-#from Parser import *
-#from Chords import *
+from Lights import *
+from Parser import *
+from Chords import *
 
 # This is the class that Identifies the little bar on the tuner
 
- class SlidingTunerBar(Widget):
+class SlidingTunerBar(Widget):
 	velocity = ListProperty([10, 15])
 
 	def __init__(self, **kwargs):
@@ -75,6 +77,9 @@ c = os.path.abspath(os.path.join('.','Note Recognition, etc'))
 # The id member has the path+file name.
 # The text member has just the file name without the .txt
 def play_tab(tab, *args):
+	fn = tab.text + '.txt'
+	song = parser(fn)
+	lightGuitar(song)
 	pass
 	#print(tab.id)
 
@@ -224,7 +229,7 @@ class GuitarApp(App):
 			# Configure size of button
 			button.size_hint = (.2, .2)
 			# Add function to button
-			button.bind(on_release= play_tab)
+			button.bind(on_release = play_tab)
 			# Add button!
 			tab_page.add_widget(button)
 

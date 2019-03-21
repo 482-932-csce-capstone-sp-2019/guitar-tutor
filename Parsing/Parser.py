@@ -9,7 +9,7 @@ sys.path.append(lib_path)
 from Lights import *
 
 # Parses and creates data structure
-def parser():
+def parser(file):
 
     line = ""
     song = {}
@@ -38,8 +38,7 @@ def parser():
     measureCount["E"] = 1
 
 
-    file = input("Enter file name:\n")
-    file = lib_path = os.path.abspath(os.path.join('.', 'Tabs', file))
+    file = lib_path = os.path.abspath(os.path.join('.', 'data/Tabs', file))
     inpt = open(file,"r")
     l = list(inpt.read())
     r = range(len(l))

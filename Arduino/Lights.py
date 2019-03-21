@@ -67,63 +67,67 @@ def checkBackwards():
 
 # Loops through the data structure and lights the appropriate lights.
 def lightGuitar(song):
-    a1.s.start()
-    onLights = []
-    clear = False
-    for measure in range(101):
-        note = 0
-        renderedNote = None
-        while note < 80:
+    try:
+        a1.s.start()
+        onLights = []
+        clear = False
+        for measure in range(101):
+            note = 0
             renderedNote = None
-            for fret in range(24):
-                if song["e"][measure][note][fret] == True:
-                    onOffFunction('{0:05b}'.format(fret), '{0:03b}'.format(6))
-                    clear = True
-                    if renderedNote != None:
-                        renderedNote = False
-                    else:
-                        renderedNote = 52 + fret
-                if song["B"][measure][note][fret] == True:
-                    onOffFunction('{0:05b}'.format(fret), '{0:03b}'.format(5))
-                    clear = True
-                    if renderedNote != None:
-                        renderedNote = False
-                    else:
-                        renderedNote = 47 + fret
-                if song["G"][measure][note][fret] == True:
-                    onOffFunction('{0:05b}'.format(fret), '{0:03b}'.format(4))
-                    clear = True
-                    if renderedNote != None:
-                        renderedNote = False
-                    else:
-                        renderedNote = 43 + fret
-                if song["D"][measure][note][fret] == True:
-                    onOffFunction('{0:05b}'.format(fret), '{0:03b}'.format(3))
-                    clear = True
-                    if renderedNote != None:
-                        renderedNote = False
-                    else:
-                        renderedNote = 38 + fret
-                if song["A"][measure][note][fret] == True:
-                    onOffFunction('{0:05b}'.format(fret), '{0:03b}'.format(2))
-                    clear = True
-                    if renderedNote != None:
-                        renderedNote = False
-                    else:
-                        renderedNote = 33 + fret
-                if song["E"][measure][note][fret] == True:
-                    onOffFunction('{0:05b}'.format(fret), '{0:03b}'.format(1))
-                    clear = True
-                    if renderedNote != None:
-                        renderedNote = False
-                    else:
-                        renderedNote = 28 + fret					
-            if clear == True:
-                clear = False
-                note += clearLights(renderedNote)
-            else: 
-                note += 1
-    #print("You got %f of the notes correct." % (float(a.correctNotes)/float(a.totalNotes)))
-    a1.s.stop()
+            while note < 80:
+                renderedNote = None
+                for fret in range(24):
+                    if song["e"][measure][note][fret] == True:
+                        onOffFunction('{0:05b}'.format(fret), '{0:03b}'.format(6))
+                        clear = True
+                        if renderedNote != None:
+                            renderedNote = False
+                        else:
+                            renderedNote = 52 + fret
+                    if song["B"][measure][note][fret] == True:
+                        onOffFunction('{0:05b}'.format(fret), '{0:03b}'.format(5))
+                        clear = True
+                        if renderedNote != None:
+                            renderedNote = False
+                        else:
+                            renderedNote = 47 + fret
+                    if song["G"][measure][note][fret] == True:
+                        onOffFunction('{0:05b}'.format(fret), '{0:03b}'.format(4))
+                        clear = True
+                        if renderedNote != None:
+                            renderedNote = False
+                        else:
+                            renderedNote = 43 + fret
+                    if song["D"][measure][note][fret] == True:
+                        onOffFunction('{0:05b}'.format(fret), '{0:03b}'.format(3))
+                        clear = True
+                        if renderedNote != None:
+                            renderedNote = False
+                        else:
+                            renderedNote = 38 + fret
+                    if song["A"][measure][note][fret] == True:
+                        onOffFunction('{0:05b}'.format(fret), '{0:03b}'.format(2))
+                        clear = True
+                        if renderedNote != None:
+                            renderedNote = False
+                        else:
+                            renderedNote = 33 + fret
+                    if song["E"][measure][note][fret] == True:
+                        onOffFunction('{0:05b}'.format(fret), '{0:03b}'.format(1))
+                        clear = True
+                        if renderedNote != None:
+                            renderedNote = False
+                        else:
+                            renderedNote = 28 + fret					
+                if clear == True:
+                    clear = False
+                    note += clearLights(renderedNote)
+                else: 
+                    note += 1
+        #print("You got %f of the notes correct." % (float(a.correctNotes)/float(a.totalNotes)))
+        a1.s.stop()
+    except KeyboardInterrupt:
+        a1.s.stop()
+        cl()
 # onOffFunction('{0:05b}'.format(1), '{0:03b}'.format(3))
 time.sleep(2) #waiting the initialization...
