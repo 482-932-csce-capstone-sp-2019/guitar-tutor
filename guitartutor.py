@@ -33,6 +33,9 @@ from kivy.uix.button import Button
 from kivy.uix.floatlayout import FloatLayout
 from kivy.factory import Factory
 from kivy.uix.popup import Popup
+from kivy.uix.widget import Widget
+from kivy.clock import Clock
+from kivy.core.window import Window
 
 import sys
 import shutil
@@ -46,6 +49,24 @@ c = os.path.abspath(os.path.join('.','Note Recognition, etc'))
 #from Lights import *
 #from Parser import *
 #from Chords import *
+
+# This is the class that Identifies the little bar on the tuner
+
+ class SlidingTunerBar(Widget):
+	velocity = ListProperty([10, 15])
+
+	def __init__(self, **kwargs):
+		super(SlidingTunerBar, self).__init__(**kwargs)
+		Clock.schedule_interval(self.update, 1/60.)
+	
+	def update(self, *args):
+		self.x += self.velocity[0]
+		self.y += self.velocity[1]
+
+		if self.x < 0 or (self.x + self.width) > Window.width:
+			self.velocity[0] *= -1
+		if self.y < 0 or (self.y + self.height) > Window.height:
+			self.velocity[1] *= -1
 
 # This is the function that listens to the dynamic buttons
 # When a button is pressed this function is called with the 
@@ -104,10 +125,15 @@ class GuitarApp(App):
 		cl()
 		chords(chord)
 
+	# gets a random chord name from a list of all implemented chords
+	# used for simon says game
+
 	def getRandomChord(self):
 		possibleChords = ["a","a7","am","am7","amaj7","bf","b7","bm","c","c7","cmaj7","d","dm","d7","dm7","dmaj7","e","e7","em","em7","f","fmaj7","g","g7"]
 		return random.choice(possibleChords)
 
+	# demo simon says
+	# still need to make it listen
 
 	def playSimonSays(self):
 		chordsSoFar = []
@@ -127,7 +153,7 @@ class GuitarApp(App):
 		self.screens = {}
 		# Add screens to the list
 		self.available_screens = ["HomeScreen", "ChordLibrary",
-			"TabLibrary", "AddTab", "Challenge"]
+			"TabLibrary", "AddTab", "Challenge", "Tuner"]
 		# Remember names of screens, used for loading files
 		self.screen_names = self.available_screens
 		# Get current directory

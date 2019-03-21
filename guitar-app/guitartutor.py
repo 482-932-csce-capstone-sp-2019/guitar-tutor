@@ -144,7 +144,7 @@ class GuitarApp(App):
 		self.screens = {}
 		# Add screens to the list
 		self.available_screens = ["HomeScreen", "ChordLibrary",
-			"TabLibrary", "AddTab", "Challenge"]
+			"TabLibrary", "AddTab", "Challenge", "Tuner"]
 		# Remember names of screens, used for loading files
 		self.screen_names = self.available_screens
 		# Get current directory
