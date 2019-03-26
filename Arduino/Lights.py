@@ -15,8 +15,6 @@ doneWithTab = False
 def setDoneWithTab(state):
     global doneWithTab
     doneWithTab = state
-    print('set done to')
-    print(state)
  
 
 pressed = False
@@ -46,8 +44,6 @@ def onOffFunction(fret, string):
 
 def clearLights(note = -1):
     global doneWithTab
-    print('in clear lights')
-    print(doneWithTab)
     if doneWithTab:
         pressed = True
     else:
@@ -72,8 +68,6 @@ def cl(note = -1):
     return checkBackwards()
 
 def checkBackwards():
-    print('in checkback')
-    print(pressed)
     if pressed == True:
         return -1
     else:
@@ -85,6 +79,7 @@ def ifDoneKillStream():
         cl()
         a1.s.stop()
         exit()
+
 # Loops through the data structure and lights the appropriate lights.
 def lightGuitar(song):
     global doneWithTab
