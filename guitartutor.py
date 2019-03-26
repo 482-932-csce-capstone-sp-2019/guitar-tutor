@@ -9,6 +9,7 @@ Gerardo Mares II Notes:
 
 '''
 
+import builtins
 import random
 import time
 
@@ -36,6 +37,10 @@ from kivy.uix.popup import Popup
 from kivy.uix.widget import Widget
 from kivy.clock import Clock
 from kivy.core.window import Window
+
+import threading
+from queue import Queue
+import time
 
 import sys
 import shutil
@@ -69,19 +74,6 @@ class SlidingTunerBar(Widget):
 			self.velocity[0] *= -1
 		if self.y < 0 or (self.y + self.height) > Window.height:
 			self.velocity[1] *= -1
-
-# This is the function that listens to the dynamic buttons
-# When a button is pressed this function is called with the 
-# button returned as an argument.
-# With the button returned, we can access its members.
-# The id member has the path+file name.
-# The text member has just the file name without the .txt
-def play_tab(tab, *args):
-	fn = tab.text + '.txt'
-	song = parser(fn)
-	lightGuitar(song)
-	pass
-	#print(tab.id)
 
 # This will be the class representing each screen
 # There is currently no logic in each screen
@@ -158,7 +150,7 @@ class GuitarApp(App):
 		self.screens = {}
 		# Add screens to the list
 		self.available_screens = ["HomeScreen", "ChordLibrary",
-			"TabLibrary", "AddTab", "Challenge", "Tuner"]
+			"TabLibrary", "AddTab", "Challenge", "Tuner", "PlayingTab"]
 		# Remember names of screens, used for loading files
 		self.screen_names = self.available_screens
 		# Get current directory
@@ -170,7 +162,7 @@ class GuitarApp(App):
 		self.go_screen(0)
 
 	def go_screen(self, idx):
-		#cl()
+		cl()
 		if(self.index != idx):
 			self.index = idx
 			self.root.ids.sm.switch_to(self.load_screen(idx), direction="left")
@@ -189,7 +181,7 @@ class GuitarApp(App):
 		#tab_page.bind(minimum_height=tab_page.setter('height'))
 		# delete all previous buttons!
 		# this way we don't duplicate buttons
-		#tab_page.clear_widgets()
+		tab_page.clear_widgets()
 		# Grab all tab files using glob
 		path = 'data/tabs/*.txt'
 		files = sorted(glob.glob(path))
@@ -232,6 +224,31 @@ class GuitarApp(App):
 			button.bind(on_release = play_tab)
 			# Add button!
 			tab_page.add_widget(button)
+	
+	def stopTab(self):
+		setDoneWithTab(True)
+		cl()
+
+app = GuitarApp()
+
+# This is the function that listens to the dynamic buttons
+# When a button is pressed this function is called with the 
+# button returned as an argument.
+# With the button returned, we can access its members.
+# The id member has the path+file name.
+# The text member has just the file name without the .txt
+def play_tab(tab, *args):
+	fn = tab.text + '.txt'
+	song = parser(fn)
+	setDoneWithTab(False)
+	t = threading.Thread(target=lightGuitar, args=(song,))
+	t.start()
+	app.go_screen(6)
+	pass
+	#print(tab.id)
+
+
+
 
 if __name__ == '__main__':
-	GuitarApp().run()
+	app.run()

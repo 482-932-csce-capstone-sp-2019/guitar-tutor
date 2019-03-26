@@ -10,9 +10,16 @@ from SoundDriver import NoteRecognizer
 
 a1 = NoteRecognizer()
 
+doneWithTab = False
+
+def setDoneWithTab(state):
+    global doneWithTab
+    doneWithTab = state
+    print('set done to')
+    print(state)
+ 
 
 pressed = False
-
 def findArduino():
     possiblePorts = ['COM1', 'COM2', 'COM3', 'COM4', 'COM5', 'COM6']
     arduino = 0
@@ -38,8 +45,13 @@ def onOffFunction(fret, string):
     arduino.write(byt)
 
 def clearLights(note = -1):
-    # Clears all lights
-    a1.waitForOnset(note)
+    global doneWithTab
+    print('in clear lights')
+    print(doneWithTab)
+    if doneWithTab:
+        pressed = True
+    else:
+        a1.waitForOnset(note)
     #input("Wait")
     #print("test")
 
@@ -60,13 +72,22 @@ def cl(note = -1):
     return checkBackwards()
 
 def checkBackwards():
+    print('in checkback')
+    print(pressed)
     if pressed == True:
         return -1
     else:
         return 1
 
+def ifDoneKillStream():
+    global doneWithTab
+    if (doneWithTab):
+        cl()
+        a1.s.stop()
+        exit()
 # Loops through the data structure and lights the appropriate lights.
 def lightGuitar(song):
+    global doneWithTab
     try:
         a1.s.start()
         onLights = []
@@ -75,6 +96,7 @@ def lightGuitar(song):
             note = 0
             renderedNote = None
             while note < 80:
+                ifDoneKillStream()
                 renderedNote = None
                 for fret in range(24):
                     if song["e"][measure][note][fret] == True:
@@ -121,7 +143,13 @@ def lightGuitar(song):
                             renderedNote = 28 + fret					
                 if clear == True:
                     clear = False
-                    note += clearLights(renderedNote)
+                    n = clearLights(renderedNote)
+                    if (n == -1):
+                        a1.s.stop()
+                        cl()
+                        exit()
+                    note += n
+                    
                 else: 
                     note += 1
         #print("You got %f of the notes correct." % (float(a.correctNotes)/float(a.totalNotes)))

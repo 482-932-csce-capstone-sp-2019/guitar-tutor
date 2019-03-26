@@ -1,0 +1,10 @@
+GuitarScreen:
+    # Name of the screen
+	name: "PlayingTab"
+	
+	# fullscreen helps with getting the contents formatted correctly
+	fullscreen: True
+
+    Button:
+        text: "Stop Tab"
+        on_release: app.stopTab(), app.go_screen(2)
