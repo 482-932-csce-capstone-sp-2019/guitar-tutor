@@ -14,8 +14,6 @@ from Parser import *
 from Chords import *
 
 def main():
-    p = mido.Parser()
-    p.get_message()
     # Parses and creates data structure.
     while True:
         mode = input("Would you like to learn a chord or play a tab?(Chord/Tab/Quit)")
