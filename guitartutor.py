@@ -12,6 +12,8 @@ Gerardo Mares II Notes:
 import random
 import time
 
+import threading
+
 # Used to get directory to different 'screens'
 import os
 from os.path import dirname, join
@@ -42,10 +44,14 @@ b = os.path.abspath(os.path.join('.', 'Parsing'))
 #sys.path.append(b)
 c = os.path.abspath(os.path.join('.','Note Recognition, etc'))
 #sys.path.append(c)
+d = os.path.abspath(os.path.join('.','Tuner'))
+sys.path.append(d)
 
 #from Lights import *
 #from Parser import *
 #from Chords import *
+from Tuner import *
+
 
 # This is the function that listens to the dynamic buttons
 # When a button is pressed this function is called with the 
@@ -55,10 +61,13 @@ c = os.path.abspath(os.path.join('.','Note Recognition, etc'))
 # The text member has just the file name without the .txt
 def play_tab(tab, *args):
 	pass
-	#print(tab.id)
+	#print(tab.id)	
 
-# This will be the class representing each screen
-# There is currently no logic in each screen
+	
+def start_tuner(*args):
+	set_Done_Tuning(False)
+	t1 = threading.Thread(target = tune)
+	t1.start()
 
 
 class LoadDialog(FloatLayout):
@@ -85,7 +94,8 @@ class GuitarScreen(Screen):
 	def load(self, path, filename):
 		shutil.copy(os.path.join(path, filename[0]), os.path.abspath(os.path.join('.','data/tabs')))
 		self.dismiss_popup()
-
+		
+		
 class GuitarApp(App):
 	loadfile = ObjectProperty(None)
 	savefile = ObjectProperty(None)
@@ -127,7 +137,7 @@ class GuitarApp(App):
 		self.screens = {}
 		# Add screens to the list
 		self.available_screens = ["HomeScreen", "ChordLibrary",
-			"TabLibrary", "AddTab", "Challenge"]
+			"TabLibrary", "AddTab", "Challenge", "Tuner"]
 		# Remember names of screens, used for loading files
 		self.screen_names = self.available_screens
 		# Get current directory
@@ -152,13 +162,23 @@ class GuitarApp(App):
 		screen = Builder.load_file(self.available_screens[index])
 		self.screens[index] = screen
 		return screen
+		
+	def stop_tuner(*args):
+		set_Done_Tuning(True)
+		
+	def do_tuning(self, tuner_page):
+		tuner_page.clear_widgets()
+		
+		button = Button()
+		button.text = 'test'
+		tuner_page.add_widget(button)
 	
 	# Dynamically make buttons for all tab files in the tabs folder
 	def load_tabs(self, tab_page):
-		#tab_page.bind(minimum_height=tab_page.setter('height'))
 		# delete all previous buttons!
 		# this way we don't duplicate buttons
-		#tab_page.clear_widgets()
+		tab_page.clear_widgets()
+		
 		# Grab all tab files using glob
 		path = 'data/tabs/*.txt'
 		files = sorted(glob.glob(path))

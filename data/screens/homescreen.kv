@@ -1,3 +1,5 @@
+#: import main guitartutor
+
 GuitarScreen:
     # screen name
 	name: 'HomeScreen'
@@ -33,3 +35,9 @@ GuitarScreen:
 		height: '48dp'
 		text: 'Simon Says Challenge'
 		on_release: app.go_screen(4)
+		
+	Button:
+		size_hint_y: None
+		height: '48dp'
+		text: 'Tuner'
+		on_release: main.start_tuner(), app.go_screen(5), app.do_tuning(app.screens[5].layout)
