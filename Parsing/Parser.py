@@ -9,7 +9,7 @@ sys.path.append(lib_path)
 from Lights import *
 
 # Parses and creates data structure
-def parser():
+def parser(file):
 
     line = ""
     song = {}
@@ -27,6 +27,7 @@ def parser():
                 song[string][measure][note] = {}
                 for fret in (range(24)):
                     song[string][measure][note][fret] = False
+    print(song)
 
     # This is going to keep track of the measure we are on. This is just going to keep it organized
     measureCount = {}
@@ -38,8 +39,7 @@ def parser():
     measureCount["E"] = 1
 
 
-    file = input("Enter file name:\n")
-    file = lib_path = os.path.abspath(os.path.join('.', 'Tabs', file))
+    file = lib_path = os.path.abspath(os.path.join('.', 'data/Tabs', file))
     inpt = open(file,"r")
     l = list(inpt.read())
     r = range(len(l))
