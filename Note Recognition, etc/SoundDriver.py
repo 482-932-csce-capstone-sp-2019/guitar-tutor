@@ -52,6 +52,7 @@ class NoteRecognizer():
 	
 	# while displaying the next note, wait for the new note to begin, and grade the currently held note
 	def waitForOnset(self, next = -1):
+		print(next)
 		totalLength = 0
 		correctTone = 0
 		tp = self.notelist[self.currentNote] #target pitch		
