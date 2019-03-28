@@ -37,7 +37,6 @@ arduino = findArduino()
 def onOffFunction(fret, string):
     # This creates the full binary string we are going to use and converts it to a byte which will light the light.
     light = fret + string
-    #print(light)
     n = int(light, 2)
     byt = bytes([n])
     arduino.write(byt)
@@ -48,8 +47,6 @@ def clearLights(note = -1):
         pressed = True
     else:
         a1.waitForOnset(note)
-    #input("Wait")
-    #print("test")
 
     n = int("0",2)
     byt = bytes([n])
@@ -59,8 +56,6 @@ def clearLights(note = -1):
 def cl(note = -1):
     # Clears all lights
     #a.waitForOnset(note)
-    #input("Wait")
-    #print("test")
 
     n = int("0",2)
     byt = bytes([n])
@@ -147,7 +142,6 @@ def lightGuitar(song):
                     
                 else: 
                     note += 1
-        #print("You got %f of the notes correct." % (float(a.correctNotes)/float(a.totalNotes)))
         a1.s.stop()
     except KeyboardInterrupt:
         a1.s.stop()

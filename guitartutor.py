@@ -250,7 +250,6 @@ def play_tab(tab, *args):
 	t.start()
 	app.go_screen(6)
 	pass
-	#print(tab.id)
 
 
 
