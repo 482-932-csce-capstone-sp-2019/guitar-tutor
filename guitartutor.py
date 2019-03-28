@@ -32,6 +32,7 @@ import re
 from kivy.uix.button import Button
 
 from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.label import Label
 from kivy.factory import Factory
 from kivy.uix.popup import Popup
 from kivy.uix.widget import Widget
@@ -102,6 +103,10 @@ class GuitarScreen(Screen):
 
 	def load(self, path, filename):
 		shutil.copy(os.path.join(path, filename[0]), os.path.abspath(os.path.join('.','data/tabs')))
+		content = Button(text='Success')
+		popup = Popup(title='Result', content=content,  size_hint=(None, None), size=(200, 200), auto_dismiss=False)		
+		content.bind(on_press=popup.dismiss)
+		popup.open()
 		self.dismiss_popup()
 
 class GuitarApp(App):

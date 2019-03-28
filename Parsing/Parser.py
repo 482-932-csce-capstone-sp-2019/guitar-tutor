@@ -27,6 +27,7 @@ def parser(file):
                 song[string][measure][note] = {}
                 for fret in (range(24)):
                     song[string][measure][note][fret] = False
+    print(song)
 
     # This is going to keep track of the measure we are on. This is just going to keep it organized
     measureCount = {}

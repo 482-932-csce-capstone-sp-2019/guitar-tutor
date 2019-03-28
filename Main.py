@@ -1,6 +1,6 @@
 from pyparsing import *
 import fileinput
-
+import mido
 import os, sys
 a = os.path.abspath(os.path.join('.','Arduino'))
 sys.path.append(a)
@@ -14,7 +14,6 @@ from Parser import *
 from Chords import *
 
 def main():
-    
     # Parses and creates data structure.
     while True:
         mode = input("Would you like to learn a chord or play a tab?(Chord/Tab/Quit)")

@@ -16,6 +16,7 @@ GuitarScreen:
         orientation: "vertical"
         FileChooserListView:
             id: filechooser
+            
 
         BoxLayout:
             size_hint_y: None
@@ -27,3 +28,10 @@ GuitarScreen:
             Button:
                 text: "Load"
                 on_release: root.load(filechooser.path, filechooser.selection)
+
+<MyPopup@Popup>:
+    auto_dismiss: False
+    Button:
+        text: 'Success!'
+        on_release: root.dismiss()
+
