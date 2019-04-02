@@ -58,6 +58,8 @@ from Lights import *
 from Parser import *
 from Chords import *
 
+# need to reference the thread for tab playing in multiple functions
+# made it a global to reflect this
 t = threading.Thread()
 
 # This is the class that Identifies the little bar on the tuner

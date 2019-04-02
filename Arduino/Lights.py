@@ -10,8 +10,12 @@ from SoundDriver import NoteRecognizer
 
 a1 = NoteRecognizer()
 
+# used to launch the application without the arduino plugged in
+# used mostly for development purposes
 noArduinoMode = False
 
+# GUI needs to stay active while a tab is being played
+# When the user wants to play a tab, start a thread to do so
 doneWithTab = False
 def setDoneWithTab(state):
     global doneWithTab
@@ -19,6 +23,9 @@ def setDoneWithTab(state):
  
 
 pressed = False
+
+# attempts to find the arduino port
+# sets the application to noarduino mode if it cannot be found
 def findArduino():
     global noArduinoMode
     possiblePorts = ['COM1', 'COM2', 'COM3', 'COM4', 'COM5', 'COM6']
@@ -84,9 +91,11 @@ def ifDoneKillStream():
         exit()
 
 # Loops through the data structure and lights the appropriate lights.
+# this is meant to be run as a thread alongside the actual application
 def lightGuitar(song):
     global noArduinoMode
     global doneWithTab
+    # if the arduino is not connected, just exit
     if (noArduinoMode):
         exit()
     try:
