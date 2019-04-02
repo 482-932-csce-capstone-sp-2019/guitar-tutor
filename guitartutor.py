@@ -290,6 +290,13 @@ def play_tab(tab, *args):
 
 	
 ########################TUNER######################################	
+'''
+	Credits: 
+		GitHub user handles: mzucker, michniewicz
+		URL: https://github.com/michniewicz/python-tuner/graphs/contributors
+		
+'''
+
 #! /usr/bin/env python
 
 NOTE_MIN = 40       # E2
