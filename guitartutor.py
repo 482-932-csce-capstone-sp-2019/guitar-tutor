@@ -30,8 +30,14 @@ from kivy.lang import Builder
 import glob
 # Use this to get names of tabs and paste them to buttons
 import re
+
+import numpy as np
+import pyaudio
+
 # Use this for making buttons dynamically
 from kivy.uix.button import Button
+from kivy.uix.label import Label
+
 
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.label import Label
@@ -59,31 +65,8 @@ sys.path.append(d)
 from Lights import *
 from Parser import *
 from Chords import *
-
+	
 # This is the class that Identifies the little bar on the tuner
-
-class SlidingTunerBar(Widget):
-	velocity = ListProperty([10, 15])
-
-	def __init__(self, **kwargs):
-		super(SlidingTunerBar, self).__init__(**kwargs)
-		Clock.schedule_interval(self.update, 1/60.)
-	
-	def update(self, *args):
-		self.x += self.velocity[0]
-		self.y += self.velocity[1]
-
-		if self.x < 0 or (self.x + self.width) > Window.width:
-			self.velocity[0] *= -1
-		if self.y < 0 or (self.y + self.height) > Window.height:
-			self.velocity[1] *= -1
-
-	
-def start_tuner(*args):
-	set_Done_Tuning(False)
-	t1 = threading.Thread(target = tune)
-	t1.start()
-
 
 class LoadDialog(FloatLayout):
     load = ObjectProperty(None)
@@ -188,15 +171,52 @@ class GuitarApp(App):
 		self.screens[index] = screen
 		return screen
 		
+	def start_tuner(*args):
+		set_Done_Tuning(False)
+		t1 = threading.Thread(target = tune)
+		t1.start()
+	
 	def stop_tuner(*args):
 		set_Done_Tuning(True)
 		
-	def do_tuning(self, tuner_page):
+	def do_tuning(self):
+		tuner_page = self.screens[5].layout
 		tuner_page.clear_widgets()
 		
 		button = Button()
-		button.text = 'test'
+		button.text = 'Click me after changing to Monophonic Mode'
+		button.font_size = '20dp'
+		button.bind(on_release = app.start_tuner)
 		tuner_page.add_widget(button)
+		
+	def update_tuner(self, note_name, cents):
+		tuner_page = self.screens[5].layout
+		tuner_page.clear_widgets()
+		
+		label = Label()
+		title = Label()
+		
+		# text to tune up or down
+		tuner_text = ''
+		label.color = [1, 0, 0, 1]
+		
+		if np.greater(-0.1,cents):
+			tuner_text = 'Tune Up \n{:+.2f} cents'.format(cents)
+		
+		if np.greater(cents, 0.1):
+			tuner_text = 'Tune Down \n{:+.2f} cents'.format(cents)
+			
+		if tuner_text == '':
+			tuner_text = 'In Tune'
+			label.color = [0, 1, 0, 1]
+		
+		title.text = tuner_text
+		label.text = note_name
+		label.font_size = '100dp'
+		
+		
+		tuner_page.add_widget(title)
+		tuner_page.add_widget(label)
 	
 	# Dynamically make buttons for all tab files in the tabs folder
 	def load_tabs(self, tab_page):
@@ -267,9 +287,112 @@ def play_tab(tab, *args):
 	t.start()
 	app.go_screen(6)
 	pass
-	#print(tab.id)
+
+	
+########################TUNER######################################	
+#! /usr/bin/env python
+
+NOTE_MIN = 40       # E2
+NOTE_MAX = 64       # E4
+FSAMP = 22050       # Sampling frequency in Hz
+FRAME_SIZE = 2048   # samples per frame
+FRAMES_PER_FFT = 16  # FFT takes average across how many frames?
+
+######################################################################
+# Derived quantities from constants above. Note that as
+# SAMPLES_PER_FFT goes up, the frequency step size decreases (sof
+# resolution increases); however, it will incur more delay to process
+# new sounds.
+
+SAMPLES_PER_FFT = FRAME_SIZE * FRAMES_PER_FFT
+FREQ_STEP = float(FSAMP) / SAMPLES_PER_FFT
+
+######################################################################
+# For printing out notes
+
+NOTE_NAMES = 'E F F# G G# A A# B C C# D D#'.split()
 
 
+######################################################################
+# These three functions are based upon this very useful webpage:
+# https://newt.phys.unsw.edu.au/jw/notes.html
+
+def freq_to_number(f): return 64 + 12 * np.log2(f / 329.63)
+
+
+def number_to_freq(n): return 329.63 * 2.0**((n - 64) / 12.0)
+
+
+def note_name(n):
+    return NOTE_NAMES[n % NOTE_MIN % len(NOTE_NAMES)] + str(int(n / 12 - 1))
+
+######################################################################
+# Ok, ready to go now.
+
+# Get min/max index within FFT of notes we care about.
+# See docs for numpy.rfftfreq()
+
+
+def note_to_fftbin(n): return number_to_freq(n) / FREQ_STEP
+
+
+Done_Tuning = False
+
+def set_Done_Tuning(state):
+	global Done_Tuning
+	Done_Tuning = state
+
+def tune():
+
+	imin = max(0, int(np.floor(note_to_fftbin(NOTE_MIN - 1))))
+	imax = min(SAMPLES_PER_FFT, int(np.ceil(note_to_fftbin(NOTE_MAX + 1))))
+
+	# Allocate space to run an FFT.
+	buf = np.zeros(SAMPLES_PER_FFT, dtype=np.float32)
+	num_frames = 0
+
+	# Initialize audio
+	stream = pyaudio.PyAudio().open(format=pyaudio.paInt16,
+									channels=1,
+									rate=FSAMP,
+									input=True,
+									frames_per_buffer=FRAME_SIZE)
+
+	stream.start_stream()
+
+	# Create Hanning window function
+	window = 0.5 * (1 - np.cos(np.linspace(0, 2 * np.pi, SAMPLES_PER_FFT, False)))
+
+	# Print initial text
+	#print('sampling at', FSAMP, 'Hz with max resolution of', FREQ_STEP, 'Hz')
+	#print()
+
+	global Done_Tuning
+	
+	# As long as we are getting data:
+	while stream.is_active() and not Done_Tuning:
+
+		# Shift the buffer down and new data in
+		buf[:-FRAME_SIZE] = buf[FRAME_SIZE:]
+		buf[-FRAME_SIZE:] = np.frombuffer(stream.read(FRAME_SIZE), np.int16)
+
+		# Run the FFT on the windowed buffer
+		fft = np.fft.rfft(buf * window)
+
+		# Get frequency of maximum response in range
+		freq = (np.abs(fft[imin:imax]).argmax() + imin) * FREQ_STEP
+
+		# Get note number and nearest note
+		n = freq_to_number(freq)
+		n0 = int(round(n))
+
+		# Console output once we have a full buffer
+		num_frames += 1
+
+		if num_frames >= FRAMES_PER_FFT:
+			app.update_tuner(note_name(n0),n - n0)
+			#print('number {:7.2f} freq: {:7.2f} Hz     note: {:>3s} {:+.2f}'.format(n,
+			#																		freq, note_name(n0), n - n0))
 
 
 if __name__ == '__main__':
