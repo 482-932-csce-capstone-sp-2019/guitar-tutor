@@ -10,8 +10,9 @@ from SoundDriver import NoteRecognizer
 
 a1 = NoteRecognizer()
 
-doneWithTab = False
+noArduinoMode = False
 
+doneWithTab = False
 def setDoneWithTab(state):
     global doneWithTab
     doneWithTab = state
@@ -19,6 +20,7 @@ def setDoneWithTab(state):
 
 pressed = False
 def findArduino():
+    global noArduinoMode
     possiblePorts = ['COM1', 'COM2', 'COM3', 'COM4', 'COM5', 'COM6']
     arduino = 0
     for p in possiblePorts:
@@ -28,18 +30,21 @@ def findArduino():
         except:
             arduino = 0
     if arduino == 0:
-        print('Could not find arduino, exiting')
-        exit()
+        print('Could not find arduino, starting in GUI only mode')
+        noArduinoMode = True
+
     return arduino
 
 arduino = findArduino()
 
 def onOffFunction(fret, string):
+    global noArduinoMode
     # This creates the full binary string we are going to use and converts it to a byte which will light the light.
     light = fret + string
     n = int(light, 2)
     byt = bytes([n])
-    arduino.write(byt)
+    if not noArduinoMode:
+        arduino.write(byt)
 
 def clearLights(note = -1):
     global doneWithTab
@@ -50,16 +55,19 @@ def clearLights(note = -1):
 
     n = int("0",2)
     byt = bytes([n])
-    arduino.write(byt)
+    if not noArduinoMode:
+        arduino.write(byt)
     return checkBackwards()
 
 def cl(note = -1):
     # Clears all lights
     #a.waitForOnset(note)
+    global noArduinoMode
 
     n = int("0",2)
     byt = bytes([n])
-    arduino.write(byt)
+    if not noArduinoMode:
+        arduino.write(byt)
     return checkBackwards()
 
 def checkBackwards():
@@ -77,7 +85,10 @@ def ifDoneKillStream():
 
 # Loops through the data structure and lights the appropriate lights.
 def lightGuitar(song):
+    global noArduinoMode
     global doneWithTab
+    if (noArduinoMode):
+        exit()
     try:
         a1.s.start()
         onLights = []
