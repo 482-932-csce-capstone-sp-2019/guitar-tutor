@@ -152,5 +152,6 @@ def lightGuitar(song):
     except KeyboardInterrupt:
         a1.s.stop()
         cl()
+    print(a1.correctNotes/a1.totalNotes)
 # onOffFunction('{0:05b}'.format(1), '{0:03b}'.format(3))
 time.sleep(2) #waiting the initialization...
