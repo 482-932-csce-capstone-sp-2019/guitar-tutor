@@ -90,11 +90,24 @@ def ifDoneKillStream():
         a1.s.stop()
         exit()
 
+note = 0
+measure = 0
+fret = 0
+
+def getSongPosition():
+    global note
+    global measure
+    global fret
+    return (measure, note, fret)
+
 # Loops through the data structure and lights the appropriate lights.
 # this is meant to be run as a thread alongside the actual application
 def lightGuitar(song):
     global noArduinoMode
     global doneWithTab
+    global note
+    global measure
+    global fret
     # if the arduino is not connected, just exit
     if (noArduinoMode):
         exit()
