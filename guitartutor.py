@@ -80,6 +80,44 @@ class SlidingTunerBar(Widget):
 		if self.y < 0 or (self.y + self.height) > Window.height:
 			self.velocity[1] *= -1
 
+song = 0
+
+def getFretPressed(frets):
+	fretPressed = -1
+	try:
+		fretPressed = frets.index(True) 
+	except:
+		return '-'
+	return str(fretPressed + 1)
+
+class OnScreenTab(Widget):
+	stringEHigh = StringProperty()
+	stringB = StringProperty()
+	stringG = StringProperty()
+	stringD = StringProperty()
+	stringA = StringProperty()
+	stringE = StringProperty()
+
+	def __init__(self, **kwargs):
+		super(OnScreenTab, self).__init__(**kwargs)
+		Clock.schedule_interval(self.update, 1/60.)
+	
+	def update(self, *args):
+		global song
+		(measure, note, fret) = getSongPosition()
+
+		print(measure)
+		print(note)
+		print(fret)
+
+		# self.stringEHigh = getFretPressed(song["e"][measure][note])
+		# self.stringB = getFretPressed(song["B"][measure][note])
+		# self.stringG = getFretPressed(song["G"][measure][note])
+		# self.stringD = getFretPressed(song["D"][measure][note])
+		# self.stringA = getFretPressed(song["A"][measure][note])
+		# self.stringE = getFretPressed(song["E"][measure][note])
+
+
 # This will be the class representing each screen
 # There is currently no logic in each screen
 
@@ -259,6 +297,8 @@ class GuitarScreen(Screen):
 # The id member has the path+file name.
 # The text member has just the file name without the .txt
 def play_tab(tab, *args):
+	global song
+
 	fn = tab.text + '.txt'
 	song = parser(fn)
 	setDoneWithTab(False)
@@ -272,4 +312,8 @@ def play_tab(tab, *args):
 
 
 if __name__ == '__main__':
-	app.run()
+	try:
+		app.run()
+	except Exception as e:
+		print(e)
+		t.join()
