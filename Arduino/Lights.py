@@ -10,15 +10,24 @@ from SoundDriver import NoteRecognizer
 
 a1 = NoteRecognizer()
 
-doneWithTab = False
+# used to launch the application without the arduino plugged in
+# used mostly for development purposes
+noArduinoMode = False
 
+# GUI needs to stay active while a tab is being played
+# When the user wants to play a tab, start a thread to do so
+doneWithTab = False
 def setDoneWithTab(state):
     global doneWithTab
     doneWithTab = state
  
 
 pressed = False
+
+# attempts to find the arduino port
+# sets the application to noarduino mode if it cannot be found
 def findArduino():
+    global noArduinoMode
     possiblePorts = ['COM1', 'COM2', 'COM3', 'COM4', 'COM5', 'COM6']
     arduino = 0
     for p in possiblePorts:
@@ -28,19 +37,21 @@ def findArduino():
         except:
             arduino = 0
     if arduino == 0:
-        print('Could not find arduino, exiting')
-        exit()
+        print('Could not find arduino, starting in GUI only mode')
+        noArduinoMode = True
+
     return arduino
 
 arduino = findArduino()
 
 def onOffFunction(fret, string):
+    global noArduinoMode
     # This creates the full binary string we are going to use and converts it to a byte which will light the light.
     light = fret + string
-    #print(light)
     n = int(light, 2)
     byt = bytes([n])
-    arduino.write(byt)
+    if not noArduinoMode:
+        arduino.write(byt)
 
 def clearLights(note = -1):
     global doneWithTab
@@ -48,23 +59,22 @@ def clearLights(note = -1):
         pressed = True
     else:
         a1.waitForOnset(note)
-    #input("Wait")
-    #print("test")
 
     n = int("0",2)
     byt = bytes([n])
-    arduino.write(byt)
+    if not noArduinoMode:
+        arduino.write(byt)
     return checkBackwards()
 
 def cl(note = -1):
     # Clears all lights
     #a.waitForOnset(note)
-    #input("Wait")
-    #print("test")
+    global noArduinoMode
 
     n = int("0",2)
     byt = bytes([n])
-    arduino.write(byt)
+    if not noArduinoMode:
+        arduino.write(byt)
     return checkBackwards()
 
 def checkBackwards():
@@ -77,14 +87,33 @@ def ifDoneKillStream():
     global doneWithTab
     if (doneWithTab):
         cl()
-        a1.s.stop()
+        #a1.s.stop()
         exit()
 
+note = 0
+measure = 0
+fret = 0
+
+def getSongPosition():
+    global note
+    global measure
+    global fret
+    return (measure, note, fret)
+
 # Loops through the data structure and lights the appropriate lights.
+# this is meant to be run as a thread alongside the actual application
 def lightGuitar(song):
+    global noArduinoMode
     global doneWithTab
+    global note
+    global measure
+    global fret
+    # if the arduino is not connected, just exit
+    if (noArduinoMode):
+        time.sleep(2)
+        exit()
     try:
-        a1.s.start()
+        #a1.s.start()
         onLights = []
         clear = False
         for measure in range(101):
@@ -140,7 +169,7 @@ def lightGuitar(song):
                     clear = False
                     n = clearLights(renderedNote)
                     if (n == -1):
-                        a1.s.stop()
+                        #a1.s.stop()
                         cl()
                         exit()
                     note += n
@@ -148,9 +177,9 @@ def lightGuitar(song):
                 else: 
                     note += 1
         #print("You got %f of the notes correct." % (float(a.correctNotes)/float(a.totalNotes)))
-        a1.s.stop()
+        #a1.s.stop()
     except KeyboardInterrupt:
-        a1.s.stop()
+        #a1.s.stop()
         cl()
     print(a1.correctNotes/a1.totalNotes)
 # onOffFunction('{0:05b}'.format(1), '{0:03b}'.format(3))

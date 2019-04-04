@@ -4,7 +4,16 @@ GuitarScreen:
 	
 	# fullscreen helps with getting the contents formatted correctly
 	fullscreen: True
+    OnScreenTab:
+        pos: self.pos
 
-    Button:
-        text: "Stop Tab"
-        on_release: app.stopTab(), app.go_screen(2)
+
+<OnScreenTab>:
+    canvas:
+        Color:
+            rgba: 1,0,0,1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    Label:
+        text: root.stringEHigh
