@@ -62,9 +62,9 @@ sys.path.append(c)
 d = os.path.abspath(os.path.join('.', 'data'))
 sys.path.append(d)
 
-from Lights import *
-from Parser import *
-from Chords import *
+#from Lights import *
+#from Parser import *
+#from Chords import *
 	
 # This is the class that Identifies the little bar on the tuner
 
@@ -157,7 +157,7 @@ class GuitarApp(App):
 		self.go_screen(0)
 
 	def go_screen(self, idx):
-		cl()
+		#cl()
 		if(self.index != idx):
 			self.index = idx
 			self.root.ids.sm.switch_to(self.load_screen(idx), direction="left")
@@ -183,8 +183,8 @@ class GuitarApp(App):
 		tuner_page = self.screens[5].layout
 		tuner_page.clear_widgets()
 		
-		button = Button()
-		button.text = 'Click me after changing to Monophonic Mode'
+		button = Label()
+		button.text = 'Starting Tuner...'
 		button.font_size = '20dp'
 		button.bind(on_release = app.start_tuner)
 		tuner_page.add_widget(button)
@@ -195,6 +195,8 @@ class GuitarApp(App):
 		
 		label = Label()
 		title = Label()
+		
+		cents = cents * 10
 		
 		# text to tune up or down
 		tuner_text = ''
@@ -207,7 +209,7 @@ class GuitarApp(App):
 			tuner_text = 'Tune Down \n{:+.2f} cents'.format(cents)
 			
 		if tuner_text == '':
-			tuner_text = 'In Tune'
+			tuner_text = 'In Tune \n{:+.2f} cents'.format(cents)
 			label.color = [0, 1, 0, 1]
 		
 		title.text = tuner_text
@@ -400,7 +402,7 @@ def tune():
 			app.update_tuner(note_name(n0),n - n0)
 			#print('number {:7.2f} freq: {:7.2f} Hz     note: {:>3s} {:+.2f}'.format(n,
 			#																		freq, note_name(n0), n - n0))
-
+	stream.close()
 
 if __name__ == '__main__':
 	app.run()
