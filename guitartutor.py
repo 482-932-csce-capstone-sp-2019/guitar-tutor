@@ -90,6 +90,8 @@ def getFretPressed(frets):
 		return '-'
 	return str(fretPressed + 1)
 
+onScreenTabClock = 0
+
 class OnScreenTab(Widget):
 	stringEHigh = StringProperty()
 	stringB = StringProperty()
@@ -99,16 +101,17 @@ class OnScreenTab(Widget):
 	stringE = StringProperty()
 
 	def __init__(self, **kwargs):
+		global onScreenTabClock
 		super(OnScreenTab, self).__init__(**kwargs)
-		Clock.schedule_interval(self.update, 1/60.)
+		onScreenTabClock = Clock.schedule_interval(self.update, 1/60.)
 	
 	def update(self, *args):
 		global song
 		(measure, note, fret) = getSongPosition()
 
-		print(measure)
-		print(note)
-		print(fret)
+		print('measure ' + str(measure))
+		print('note ' + str(note))
+		print('fret ' + str(fret))
 
 		# self.stringEHigh = getFretPressed(song["e"][measure][note])
 		# self.stringB = getFretPressed(song["B"][measure][note])
@@ -253,7 +256,9 @@ class GuitarApp(App):
 app = GuitarApp()
 
 def stopPlayingTabCheck(dt):
+	global onScreenTabClock
 	if app.index == 6 and not t.isAlive():
+		onScreenTabClock.cancel()
 		app.go_screen(2)
 
 Clock.schedule_interval(stopPlayingTabCheck, .1)

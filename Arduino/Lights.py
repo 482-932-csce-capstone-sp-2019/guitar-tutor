@@ -110,6 +110,7 @@ def lightGuitar(song):
     global fret
     # if the arduino is not connected, just exit
     if (noArduinoMode):
+        time.sleep(2)
         exit()
     try:
         a1.s.start()
