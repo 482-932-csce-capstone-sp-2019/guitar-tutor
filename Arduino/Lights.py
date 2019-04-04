@@ -175,12 +175,8 @@ def lightGuitar(song):
                     
                 else: 
                     note += 1
-<<<<<<< HEAD
         #print("You got %f of the notes correct." % (float(a.correctNotes)/float(a.totalNotes)))
         #a1.s.stop()
-=======
-        a1.s.stop()
->>>>>>> master
     except KeyboardInterrupt:
         #a1.s.stop()
         cl()

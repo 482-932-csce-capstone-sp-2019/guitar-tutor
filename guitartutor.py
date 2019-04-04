@@ -106,9 +106,9 @@ class OnScreenTab(Widget):
 		global song
 		(measure, note, fret) = getSongPosition()
 
-		print(measure)
-		print(note)
-		print(fret)
+		#print(measure)
+		#print(note)
+		#print(fret)
 
 		# self.stringEHigh = getFretPressed(song["e"][measure][note])
 		# self.stringB = getFretPressed(song["B"][measure][note])

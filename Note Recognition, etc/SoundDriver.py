@@ -96,7 +96,7 @@ class NoteRecognizer():
 		# as long as the note was correct for half the time we heard it, count it
 		# this can be fiddled with
 		#self.lx = self.o.get_last_s()
-		port.panic()
+		#port.panic()
 		port.close()
 		if totalLength != 0:
 			self.correctNotes += 1
