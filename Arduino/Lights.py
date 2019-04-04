@@ -77,14 +77,14 @@ def ifDoneKillStream():
     global doneWithTab
     if (doneWithTab):
         cl()
-        a1.s.stop()
+        #a1.s.stop()
         exit()
 
 # Loops through the data structure and lights the appropriate lights.
 def lightGuitar(song):
     global doneWithTab
     try:
-        a1.s.start()
+        #a1.s.start()
         onLights = []
         clear = False
         for measure in range(101):
@@ -140,7 +140,7 @@ def lightGuitar(song):
                     clear = False
                     n = clearLights(renderedNote)
                     if (n == -1):
-                        a1.s.stop()
+                        #a1.s.stop()
                         cl()
                         exit()
                     note += n
@@ -148,9 +148,9 @@ def lightGuitar(song):
                 else: 
                     note += 1
         #print("You got %f of the notes correct." % (float(a.correctNotes)/float(a.totalNotes)))
-        a1.s.stop()
+        #a1.s.stop()
     except KeyboardInterrupt:
-        a1.s.stop()
+        #a1.s.stop()
         cl()
     print(a1.correctNotes/a1.totalNotes)
 # onOffFunction('{0:05b}'.format(1), '{0:03b}'.format(3))
