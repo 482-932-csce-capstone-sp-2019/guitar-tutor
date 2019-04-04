@@ -110,12 +110,12 @@ class OnScreenTab(Widget):
 		print(note)
 		print(fret)
 
-		self.stringEHigh = getFretPressed(song["e"][measure][note])
-		self.stringB = getFretPressed(song["B"][measure][note])
-		self.stringG = getFretPressed(song["G"][measure][note])
-		self.stringD = getFretPressed(song["D"][measure][note])
-		self.stringA = getFretPressed(song["A"][measure][note])
-		self.stringE = getFretPressed(song["E"][measure][note])
+		# self.stringEHigh = getFretPressed(song["e"][measure][note])
+		# self.stringB = getFretPressed(song["B"][measure][note])
+		# self.stringG = getFretPressed(song["G"][measure][note])
+		# self.stringD = getFretPressed(song["D"][measure][note])
+		# self.stringA = getFretPressed(song["A"][measure][note])
+		# self.stringE = getFretPressed(song["E"][measure][note])
 
 
 # This will be the class representing each screen
