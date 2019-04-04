@@ -70,24 +70,6 @@ from Chords import *
 # made it a global to reflect this
 t = threading.Thread()
 
-# This is the class that Identifies the little bar on the tuner
-
-class SlidingTunerBar(Widget):
-	velocity = ListProperty([10, 15])
-
-	def __init__(self, **kwargs):
-		super(SlidingTunerBar, self).__init__(**kwargs)
-		Clock.schedule_interval(self.update, 1/60.)
-	
-	def update(self, *args):
-		self.x += self.velocity[0]
-		self.y += self.velocity[1]
-
-		if self.x < 0 or (self.x + self.width) > Window.width:
-			self.velocity[0] *= -1
-		if self.y < 0 or (self.y + self.height) > Window.height:
-			self.velocity[1] *= -1
-
 song = 0
 
 def getFretPressed(frets):
@@ -161,6 +143,13 @@ class GuitarScreen(Screen):
 		content.bind(on_press=popup.dismiss)
 		popup.open()
 		self.dismiss_popup()
+	
+	def update(self):
+		global t
+		print('pp')
+		if app.current_title() == 'PlayingTab':
+			if not t.isAlive():
+				app.go_screen(3)
 
 class GuitarApp(App):
 	loadfile = ObjectProperty(None)
@@ -345,39 +334,6 @@ def stopPlayingTabCheck(dt):
 		app.go_screen(2)
 
 Clock.schedule_interval(stopPlayingTabCheck, .1)
-
-class GuitarScreen(Screen):
-	fullscreen = BooleanProperty(False)
-
-	# This function adds the widget to the window, we need this to display the pages
-	def add_widget(self, *args):
-		if 'content' in self.ids:
-			return self.ids.content.add_widget(*args)
-		return super(GuitarScreen, self).add_widget(*args)
-		
-	def dismiss_popup(self):
-		self._popup.dismiss()
-
-	def show_load(self):
-		content = LoadDialog(load=self.load, cancel=self.dismiss_popup)
-		self._popup = Popup(title="Load file", content=content, size_hint=(0.9, 0.9))
-		self._popup.open()
-
-	def load(self, path, filename):
-		shutil.copy(os.path.join(path, filename[0]), os.path.abspath(os.path.join('.','data/tabs')))
-		content = Button(text='Success')
-		popup = Popup(title='Result', content=content,  size_hint=(None, None), size=(200, 200), auto_dismiss=False)		
-		content.bind(on_press=popup.dismiss)
-		popup.open()
-		self.dismiss_popup()
-	
-	def update(self):
-		global t
-		print('pp')
-		if app.current_title() == 'PlayingTab':
-			if not t.isAlive():
-				app.go_screen(3)
-
 # This is the function that listens to the dynamic buttons
 # When a button is pressed this function is called with the 
 # button returned as an argument.
@@ -506,8 +462,8 @@ def tune():
 
 		if num_frames >= FRAMES_PER_FFT:
 			app.update_tuner(note_name(n0),n - n0)
-			print('number {:7.2f} freq: {:7.2f} Hz     note: {:>3s} {:+.2f}'.format(n,
-																					freq, note_name(n0), n - n0))
+			#print('number {:7.2f} freq: {:7.2f} Hz     note: {:>3s} {:+.2f}'.format(n,
+			#																		freq, note_name(n0), n - n0))
 	stream.close()
 
 if __name__ == '__main__':
