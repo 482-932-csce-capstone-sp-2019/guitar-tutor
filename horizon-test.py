@@ -1,26 +1,31 @@
-import kivy
-kivy.require('1.8.0')
-
 from kivy.app import App
-from kivy.uix.button import Button
+from kivy.uix.label import Label
 from kivy.uix.scrollview import ScrollView
-from kivy.uix.gridlayout import GridLayout
+from kivy.properties import StringProperty
+from kivy.lang import Builder
+
+# Based on code from https://github.com/kivy/kivy/wiki/Scrollable-Label
+
+with open('testing.txt', 'r') as file:
+    data = file.read()
+long_text = data
+Builder.load_string('''
+<ScrollableLabel>:
+    Label:
+        halign: 'left'
+        valign: 'middle'
+        font_size: 70
+        text: root.text
+''')
 
 
-class ScrollViewApp(App):
+class ScrollableLabel(ScrollView):
+    text = StringProperty('')
+    
+
+class ScrollApp(App):
     def build(self):
+        return ScrollableLabel(text=long_text)
 
-        grid = GridLayout(rows=2, size_hint=(None,None))
-        grid.bind(minimum_width=grid.setter('width'))
-
-        for i in range(60):
-            grid.add_widget(Button(text='#00' + str(i), size=(100,100), size_hint=(None,None)))
-
-        scroll = ScrollView( size_hint=(1,1), do_scroll_x=True, do_scroll_y=False )
-        scroll.add_widget(grid)
-
-        return scroll
-
-
-if __name__ == '__main__':
-    ScrollViewApp().run()
+if __name__ == "__main__":
+    ScrollApp().run()
