@@ -58,6 +58,10 @@ from Lights import *
 from Parser import *
 from Chords import *
 
+# need to reference the thread for tab playing in multiple functions
+# made it a global to reflect this
+t = threading.Thread()
+
 # This is the class that Identifies the little bar on the tuner
 
 class SlidingTunerBar(Widget):
@@ -83,31 +87,6 @@ class SlidingTunerBar(Widget):
 class LoadDialog(FloatLayout):
     load = ObjectProperty(None)
     cancel = ObjectProperty(None)
-
-class GuitarScreen(Screen):
-	fullscreen = BooleanProperty(False)
-
-	# This function adds the widget to the window, we need this to display the pages
-	def add_widget(self, *args):
-		if 'content' in self.ids:
-			return self.ids.content.add_widget(*args)
-		return super(GuitarScreen, self).add_widget(*args)
-		
-	def dismiss_popup(self):
-		self._popup.dismiss()
-
-	def show_load(self):
-		content = LoadDialog(load=self.load, cancel=self.dismiss_popup)
-		self._popup = Popup(title="Load file", content=content, size_hint=(0.9, 0.9))
-		self._popup.open()
-
-	def load(self, path, filename):
-		shutil.copy(os.path.join(path, filename[0]), os.path.abspath(os.path.join('.','data/tabs')))
-		content = Button(text='Success')
-		popup = Popup(title='Result', content=content,  size_hint=(None, None), size=(200, 200), auto_dismiss=False)		
-		content.bind(on_press=popup.dismiss)
-		popup.open()
-		self.dismiss_popup()
 
 class GuitarApp(App):
 	loadfile = ObjectProperty(None)
@@ -145,8 +124,6 @@ class GuitarApp(App):
 			for c in chordsSoFar:
 				self.displayChord(c)
 				time.sleep(1)
-
-
 	
 	def build(self):
 		# Title of window
@@ -167,6 +144,7 @@ class GuitarApp(App):
 		self.go_screen(0)
 
 	def go_screen(self, idx):
+
 		cl()
 		if(self.index != idx):
 			self.index = idx
@@ -236,6 +214,44 @@ class GuitarApp(App):
 
 app = GuitarApp()
 
+def stopPlayingTabCheck(dt):
+	if app.index == 6 and not t.isAlive():
+		app.go_screen(2)
+
+Clock.schedule_interval(stopPlayingTabCheck, .1)
+
+class GuitarScreen(Screen):
+	fullscreen = BooleanProperty(False)
+
+	# This function adds the widget to the window, we need this to display the pages
+	def add_widget(self, *args):
+		if 'content' in self.ids:
+			return self.ids.content.add_widget(*args)
+		return super(GuitarScreen, self).add_widget(*args)
+		
+	def dismiss_popup(self):
+		self._popup.dismiss()
+
+	def show_load(self):
+		content = LoadDialog(load=self.load, cancel=self.dismiss_popup)
+		self._popup = Popup(title="Load file", content=content, size_hint=(0.9, 0.9))
+		self._popup.open()
+
+	def load(self, path, filename):
+		shutil.copy(os.path.join(path, filename[0]), os.path.abspath(os.path.join('.','data/tabs')))
+		content = Button(text='Success')
+		popup = Popup(title='Result', content=content,  size_hint=(None, None), size=(200, 200), auto_dismiss=False)		
+		content.bind(on_press=popup.dismiss)
+		popup.open()
+		self.dismiss_popup()
+	
+	def update(self):
+		global t
+		print('pp')
+		if app.current_title() == 'PlayingTab':
+			if not t.isAlive():
+				app.go_screen(3)
+
 # This is the function that listens to the dynamic buttons
 # When a button is pressed this function is called with the 
 # button returned as an argument.
@@ -246,11 +262,11 @@ def play_tab(tab, *args):
 	fn = tab.text + '.txt'
 	song = parser(fn)
 	setDoneWithTab(False)
+	global t
 	t = threading.Thread(target=lightGuitar, args=(song,))
 	t.start()
 	app.go_screen(6)
 	pass
-	#print(tab.id)
 
 
 
