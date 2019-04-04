@@ -174,6 +174,7 @@ class GuitarApp(App):
 	def start_tuner(*args):
 		set_Done_Tuning(False)
 		t1 = threading.Thread(target = tune)
+		t1.daemon = True
 		t1.start()
 	
 	def stop_tuner(*args):
@@ -400,8 +401,8 @@ def tune():
 
 		if num_frames >= FRAMES_PER_FFT:
 			app.update_tuner(note_name(n0),n - n0)
-			#print('number {:7.2f} freq: {:7.2f} Hz     note: {:>3s} {:+.2f}'.format(n,
-			#																		freq, note_name(n0), n - n0))
+			print('number {:7.2f} freq: {:7.2f} Hz     note: {:>3s} {:+.2f}'.format(n,
+																					freq, note_name(n0), n - n0))
 	stream.close()
 
 if __name__ == '__main__':
