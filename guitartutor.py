@@ -348,6 +348,7 @@ def play_tab(tab, *args):
 	setDoneWithTab(False)
 	global t
 	t = threading.Thread(target=lightGuitar, args=(song,))
+	t.daemon = True
 	t.start()
 	app.go_screen(6)
 	pass
