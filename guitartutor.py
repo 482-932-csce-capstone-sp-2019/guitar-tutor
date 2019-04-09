@@ -62,8 +62,32 @@ from Chords import *
 # made it a global to reflect this
 t = threading.Thread()
 
-# This is the class that Identifies the little bar on the tuner
+# gets a random chord name from a list of all implemented chords
+# used for simon says game
+def getRandomChord():
+	possibleChords = ["a","a7","am","am7","amaj7","bf","b7","bm","c","c7","cmaj7","d","dm","d7","dm7","dmaj7","e","e7","em","em7","f","fmaj7","g","g7"]
+	return random.choice(possibleChords)
 
+# This is the widget for the simon says game
+class SimonSaysWidget(Widget):
+	chordList = ListProperty([])
+	nextChord = StringProperty()
+
+	def __init__(self, **kwargs):
+		super(SimonSaysWidget, self).__init__(**kwargs)
+		self.addChord()
+
+	def displayChord(self, chord):
+		cl()
+		chords(chord)
+	
+	def addChord(self):
+		newChord = getRandomChord()
+		chordList.append(newChord)
+		nextChord = newChord
+		
+
+# This is the class that Identifies the little bar on the tuner
 class SlidingTunerBar(Widget):
 	velocity = ListProperty([10, 15])
 
@@ -121,10 +145,6 @@ class OnScreenTab(Widget):
 		# self.stringE = getFretPressed(song["E"][measure][note])
 
 
-# This will be the class representing each screen
-# There is currently no logic in each screen
-
-
 class LoadDialog(FloatLayout):
     load = ObjectProperty(None)
     cancel = ObjectProperty(None)
@@ -147,13 +167,6 @@ class GuitarApp(App):
 		cl()
 		chords(chord)
 
-	# gets a random chord name from a list of all implemented chords
-	# used for simon says game
-
-	def getRandomChord(self):
-		possibleChords = ["a","a7","am","am7","amaj7","bf","b7","bm","c","c7","cmaj7","d","dm","d7","dm7","dmaj7","e","e7","em","em7","f","fmaj7","g","g7"]
-		return random.choice(possibleChords)
-
 	# demo simon says
 	# still need to make it listen
 
@@ -173,7 +186,7 @@ class GuitarApp(App):
 		self.screens = {}
 		# Add screens to the list
 		self.available_screens = ["HomeScreen", "ChordLibrary",
-			"TabLibrary", "AddTab", "Challenge", "Tuner", "PlayingTab"]
+			"TabLibrary", "AddTab", "Challenge", "Tuner", "PlayingTab", "SimonSays"]
 		# Remember names of screens, used for loading files
 		self.screen_names = self.available_screens
 		# Get current directory
