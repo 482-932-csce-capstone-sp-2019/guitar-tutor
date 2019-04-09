@@ -4,6 +4,8 @@ import wave
 import numpy as np
 from aubio import pitch, onset
 
+doneWithTab = False
+
 # Just using global constants for now
 # Magic numbers be damned, this is easier for right now
 CHUNK = 1024
@@ -16,6 +18,14 @@ tuningTolerance = 0.02
 downsample = 1
 win_s = 4096 // downsample # fft size
 hop_s = 1024  // downsample # hop size
+
+def setDoneWithTab(state):
+    global doneWithTab
+    doneWithTab = state
+	
+def getDoneWithTab():
+	global doneWithTab
+	return doneWithTab
 
 def getNoteDict():
 	notelist = []
@@ -34,6 +44,7 @@ def getNoteDict():
 class NoteRecognizer():
 	notelist = []
 	currentNote = -1
+	port = None
 	s = None
 	o = None
 	p = None
@@ -42,7 +53,7 @@ class NoteRecognizer():
 	lx = 0
 	def __init__(self):
 		self.notelist = getNoteDict()
-		self.s = Stream(samplerate=RATE, blocksize=CHUNK)
+		#self.s = Stream(samplerate=RATE, blocksize=CHUNK)
 		self.o = onset("default", win_s, hop_s, RATE)
 		self.p = pitch("yin", win_s, hop_s, RATE)
 		self.p.set_unit("Hz")
@@ -52,10 +63,13 @@ class NoteRecognizer():
 
 	
 	# while displaying the next note, wait for the new note to begin, and grade the currently held note
-	def waitForOnset(self, next = -1):
+	def waitForOnset(self, next = []):
+		print(len(next))
 		self.currentNote = next
-		port = mido.open_input('LoopBe Internal MIDI 1')
+		print("cureentnote length:", len(self.currentNote))
+		self.port = mido.open_input('LoopBe Internal MIDI 1')
 		#print(next)
+		print(len(next))
 		totalLength = 0
 		#correctTone = 0
 		#tp = self.notelist[self.currentNote] #target pitch		
@@ -64,40 +78,61 @@ class NoteRecognizer():
 		#mono_vec = vec.sum(-1) / float(self.s.channels[0])
 		# While we do not have a new onset
 		# Possibly ignore onsets if they get a wrong note?
+		
 		while True:
+			# if doneWithTab == True:
+			# 	self.port.close()
+			# 	exit()
 			totalLength += 1
 			# if we have a note, attempt to see if we are matching it
 			#x = self.p(mono_vec)[0]
 			#y = self.p.get_confidence()\
 			ct = 1
-			note = None
-			for msg in port.__iter__():
+			i = 0
+			note = []
+			for msg in self.port.__iter__():
+				print("Length of notes played:", len(note))
+				if getDoneWithTab():
+					self.port.close()
+					exit()
 				if msg.type == 'note_on':
-					note = msg
-					break
+					print("Note played")
+					note.append(msg)
+					print(len(note))
+					i += 1
+					if i == len(self.currentNote):
+						break
 			print(note)
 			print(self.currentNote)
 			# if we are confident that we have a pitch and we have a note to compare to, start grading
 			# also filter out possible silence, as this frequency is waaaay below a guitar's range
-			if self.currentNote != -1 and self.currentNote != None:
+			sum_correct = 0
+			if self.currentNote != [] and self.currentNote != None:
 				# if they are within 10% of the target pitch, count it
-				if note.note - 2 <= self.currentNote <= note.note + 2:
-					break
+				
+				for n in note:
+					if n.note in self.currentNote:
+						sum_correct += 1
+						print("correct:", sum_correct)
+						if sum_correct == len(self.currentNote):
+							print("breaking:", sum_correct)
+							break
 				ct += 1
 				print(ct)
+			if sum_correct == len(self.currentNote):
+				break
 					
 			# read again
 			#vec = self.s.read(CHUNK)
 			#mono_vec = vec.sum(-1) / float(self.s.channels[0])
 
 		# advance to the currently displayed note
-		self.currentNote = next
 		self.totalNotes += 1
 		# as long as the note was correct for half the time we heard it, count it
 		# this can be fiddled with
 		#self.lx = self.o.get_last_s()
 		#port.panic()
-		port.close()
+		self.port.close()
 		if totalLength != 0:
 			self.correctNotes += 1
 			return None, None, float(ct)/float(totalLength)
