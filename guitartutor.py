@@ -57,6 +57,7 @@ sys.path.append(d)
 from Lights import *
 from Parser import *
 from Chords import *
+from SoundDriver import setDoneWithTab
 
 # need to reference the thread for tab playing in multiple functions
 # made it a global to reflect this
@@ -133,9 +134,9 @@ class OnScreenTab(Widget):
 		global song
 		(measure, note, fret) = getSongPosition()
 
-		# print('measure ' + str(measure))
-		# print('note ' + str(note))
-		# print('fret ' + str(fret))
+		#print('measure ' + str(measure))
+		#print('note ' + str(note))
+		#print('fret ' + str(fret))
 
 		# self.stringEHigh = getFretPressed(song["e"][measure][note])
 		# self.stringB = getFretPressed(song["B"][measure][note])
