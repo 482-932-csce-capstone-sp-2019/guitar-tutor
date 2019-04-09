@@ -65,6 +65,7 @@ sys.path.append(d)
 from Lights import *
 from Parser import *
 from Chords import *
+from SoundDriver import setDoneWithTab
 
 # need to reference the thread for tab playing in multiple functions
 # made it a global to reflect this

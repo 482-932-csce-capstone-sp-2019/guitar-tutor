@@ -6,7 +6,7 @@ import os, sys
 lib_path = os.path.abspath(os.path.join('..', 'Note Recognition, etc'))
 sys.path.append(lib_path)
 
-from SoundDriver import NoteRecognizer
+from SoundDriver import NoteRecognizer, doneWithTab, setDoneWithTab, getDoneWithTab
 
 a1 = NoteRecognizer()
 
@@ -16,11 +16,6 @@ noArduinoMode = False
 
 # GUI needs to stay active while a tab is being played
 # When the user wants to play a tab, start a thread to do so
-doneWithTab = False
-def setDoneWithTab(state):
-    global doneWithTab
-    doneWithTab = state
- 
 
 pressed = False
 
@@ -53,13 +48,15 @@ def onOffFunction(fret, string):
     if not noArduinoMode:
         arduino.write(byt)
 
-def clearLights(note = -1):
-    global doneWithTab
-    if doneWithTab:
+def clearLights(note = []):
+    print("Note length is:", len(note))
+    if getDoneWithTab():
         pressed = True
     else:
         a1.waitForOnset(note)
 
+    print("fuck me")
+      
     n = int("0",2)
     byt = bytes([n])
     if not noArduinoMode:
@@ -84,9 +81,10 @@ def checkBackwards():
         return 1
 
 def ifDoneKillStream():
-    global doneWithTab
-    if (doneWithTab):
+    #doneWithTab
+    if (getDoneWithTab()):
         cl()
+        a1.port.close()
         #a1.s.stop()
         exit()
 
@@ -118,58 +116,41 @@ def lightGuitar(song):
         clear = False
         for measure in range(101):
             note = 0
-            renderedNote = None
+            renderedNote = []
             while note < 80:
                 ifDoneKillStream()
-                renderedNote = None
+                renderedNote = []
                 for fret in range(24):
                     if song["e"][measure][note][fret] == True:
                         onOffFunction('{0:05b}'.format(fret), '{0:03b}'.format(6))
                         clear = True
-                        if renderedNote != None:
-                            renderedNote = False
-                        else:
-                            renderedNote = 52 + fret
+                        renderedNote.append(65 + fret)
                     if song["B"][measure][note][fret] == True:
                         onOffFunction('{0:05b}'.format(fret), '{0:03b}'.format(5))
                         clear = True
-                        if renderedNote != None:
-                            renderedNote = False
-                        else:
-                            renderedNote = 47 + fret
+                        renderedNote.append(60 + fret)
                     if song["G"][measure][note][fret] == True:
                         onOffFunction('{0:05b}'.format(fret), '{0:03b}'.format(4))
                         clear = True
-                        if renderedNote != None:
-                            renderedNote = False
-                        else:
-                            renderedNote = 43 + fret
+                        renderedNote.append(55 + fret)
                     if song["D"][measure][note][fret] == True:
                         onOffFunction('{0:05b}'.format(fret), '{0:03b}'.format(3))
                         clear = True
-                        if renderedNote != None:
-                            renderedNote = False
-                        else:
-                            renderedNote = 38 + fret
+                        renderedNote.append(50 + fret)
                     if song["A"][measure][note][fret] == True:
                         onOffFunction('{0:05b}'.format(fret), '{0:03b}'.format(2))
                         clear = True
-                        if renderedNote != None:
-                            renderedNote = False
-                        else:
-                            renderedNote = 33 + fret
+                        renderedNote.append(45 + fret)
                     if song["E"][measure][note][fret] == True:
                         onOffFunction('{0:05b}'.format(fret), '{0:03b}'.format(1))
                         clear = True
-                        if renderedNote != None:
-                            renderedNote = False
-                        else:
-                            renderedNote = 28 + fret					
+                        renderedNote.append(40 + fret)
                 if clear == True:
                     clear = False
                     n = clearLights(renderedNote)
                     if (n == -1):
-                        #a1.s.stop()
+                        a1.port.close()
+                        print("Die")
                         cl()
                         exit()
                     note += n
@@ -179,7 +160,7 @@ def lightGuitar(song):
         #print("You got %f of the notes correct." % (float(a.correctNotes)/float(a.totalNotes)))
         #a1.s.stop()
     except KeyboardInterrupt:
-        #a1.s.stop()
+        a1.port.close()
         cl()
     print(a1.correctNotes/a1.totalNotes)
 # onOffFunction('{0:05b}'.format(1), '{0:03b}'.format(3))
