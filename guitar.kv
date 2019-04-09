@@ -51,7 +51,7 @@ BoxLayout:
 		ActionView:
 			ActionPrevious:
 				app_icon: 'data/icons/home.png'
-				on_release: app.go_screen(0), app.stopTab()
+				on_release: app.go_screen(app.homeScreenIdx), app.stopTab()
 	
 	ScreenManager:
 		id: sm

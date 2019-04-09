@@ -133,9 +133,9 @@ class OnScreenTab(Widget):
 		global song
 		(measure, note, fret) = getSongPosition()
 
-		print('measure ' + str(measure))
-		print('note ' + str(note))
-		print('fret ' + str(fret))
+		# print('measure ' + str(measure))
+		# print('note ' + str(note))
+		# print('fret ' + str(fret))
 
 		# self.stringEHigh = getFretPressed(song["e"][measure][note])
 		# self.stringB = getFretPressed(song["B"][measure][note])
@@ -186,7 +186,17 @@ class GuitarApp(App):
 		self.screens = {}
 		# Add screens to the list
 		self.available_screens = ["HomeScreen", "ChordLibrary",
-			"TabLibrary", "AddTab", "Challenge", "Tuner", "PlayingTab", "SimonSays"]
+			"TabLibrary", "AddTab", "Challenge", "Tuner", "PlayingTab", 
+			"SimonSays", "OneMoreNote"]
+		self.homeScreenIdx = 0
+		self.chordLibraryIdx = 1
+		self.tabLibraryIdx = 2
+		self.addTabIdx = 3
+		self.challengeIdx = 4
+		self.tunerIdx = 5
+		self.playingTabIdx = 6
+		self.simonSaysIdx = 7
+		self.oneMoreNoteIdx = 8
 		# Remember names of screens, used for loading files
 		self.screen_names = self.available_screens
 		# Get current directory
@@ -195,7 +205,7 @@ class GuitarApp(App):
 		self.available_screens = [join(curdir, 'data', 'screens',
 			'{}.kv'.format(fn).lower()) for fn in self.available_screens]
 		# Initialize first screen (index 0)
-		self.go_screen(0)
+		self.go_screen(self.homeScreenIdx)
 
 	def go_screen(self, idx):
 
@@ -265,6 +275,7 @@ class GuitarApp(App):
 	def stopTab(self):
 		setDoneWithTab(True)
 		cl()
+		app.go_screen(self.oneMoreNoteIdx)
 
 app = GuitarApp()
 
@@ -272,7 +283,7 @@ def stopPlayingTabCheck(dt):
 	global onScreenTabClock
 	if app.index == 6 and not t.isAlive():
 		onScreenTabClock.cancel()
-		app.go_screen(2)
+		app.go_screen(app.tabLibraryIdx)
 
 Clock.schedule_interval(stopPlayingTabCheck, .1)
 
@@ -306,7 +317,7 @@ class GuitarScreen(Screen):
 		print('pp')
 		if app.current_title() == 'PlayingTab':
 			if not t.isAlive():
-				app.go_screen(3)
+				app.go_screen(app.addTabIdx)
 
 # This is the function that listens to the dynamic buttons
 # When a button is pressed this function is called with the 
@@ -323,7 +334,7 @@ def play_tab(tab, *args):
 	global t
 	t = threading.Thread(target=lightGuitar, args=(song,))
 	t.start()
-	app.go_screen(6)
+	app.go_screen(app.playingTabIdx)
 	pass
 
 
