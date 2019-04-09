@@ -45,6 +45,7 @@ class NoteRecognizer():
 	notelist = []
 	currentNote = -1
 	port = None
+	portname = None
 	s = None
 	o = None
 	p = None
@@ -54,6 +55,16 @@ class NoteRecognizer():
 	def __init__(self):
 		self.notelist = getNoteDict()
 		#self.s = Stream(samplerate=RATE, blocksize=CHUNK)
+		for i in range(0,5):
+			try:
+
+				inport = mido.open_input('LoopBe Internal MIDI ' + str(i))
+				self.portname = 'LoopBe Internal MIDI ' + str(i)
+				break
+			except:
+				print(i)
+				i+=1
+				continue
 		self.o = onset("default", win_s, hop_s, RATE)
 		self.p = pitch("yin", win_s, hop_s, RATE)
 		self.p.set_unit("Hz")
@@ -67,7 +78,7 @@ class NoteRecognizer():
 		print(len(next))
 		self.currentNote = next
 		print("cureentnote length:", len(self.currentNote))
-		self.port = mido.open_input('LoopBe Internal MIDI 1')
+		self.port = mido.open_input(self.portname)
 		#print(next)
 		print(len(next))
 		totalLength = 0
@@ -109,9 +120,16 @@ class NoteRecognizer():
 			sum_correct = 0
 			if self.currentNote != [] and self.currentNote != None:
 				# if they are within 10% of the target pitch, count it
+				cs = self.currentNote
 				
 				for n in note:
-					if n.note in self.currentNote:
+					print("cs " + str(cs))
+					print("Notes: " + str(list((n.note for n in note))))
+
+					l1 = [n.note -1, n.note, n.note+1]
+					intersect = set(l1).intersection(set(cs))
+					if  len(intersect) >= 1:
+						cs = list(set(cs) - set(intersect))
 						sum_correct += 1
 						print("correct:", sum_correct)
 						if sum_correct == len(self.currentNote):

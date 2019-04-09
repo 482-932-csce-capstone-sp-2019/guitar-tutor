@@ -1,6 +1,17 @@
 import mido 
 print(mido.get_input_names())
-inport = mido.open_input('LoopBe Internal MIDI 1')
+i = 0
+for i in range(0,5):
+    try:
+
+        inport = mido.open_input('LoopBe Internal MIDI ' + str(i))
+        i+=1
+        break
+    except:
+        print(i)
+        i+=1
+        continue
+
 while True:
     for msg in inport.__iter__():
         if msg.type == 'note_on':
