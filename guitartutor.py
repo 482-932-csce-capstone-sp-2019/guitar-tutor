@@ -106,14 +106,15 @@ class SlidingTunerBar(Widget):
 			self.velocity[1] *= -1
 
 class OneMoreNoteWidget(Widget):
+	oneMoreNoteClock = 0
 	def __init__(self, **kwargs):
 		super(OneMoreNoteWidget, self).__init__(**kwargs)
-		oneMoreNoteClock = Clock.schedule_interval(self.update, 1/60.)
+		self.oneMoreNoteClock = Clock.schedule_interval(self.update, 1/60.)
 	
-	def update(self):
+	def update(self, *args):
 		if not t.isAlive():
 			app.go_screen(app.homeScreenIdx)
-			oneMoreNoteClock.cancel()
+			self.oneMoreNoteClock.cancel()
 
 song = 0
 
@@ -220,9 +221,11 @@ class GuitarApp(App):
 
 	def go_screen(self, idx):
 		cl()
-		if(t.isAlive()):
+		if(t.isAlive() and self.index != self.oneMoreNoteIdx and self.index != self.tabLibraryIdx):
 			self.index = self.oneMoreNoteIdx
 			self.root.ids.sm.switch_to(self.load_screen(self.oneMoreNoteIdx), direction="left")
+			return
+		elif(t.isAlive() and self.index == self.oneMoreNoteIdx):
 			return
 		if(self.index != idx):
 			self.index = idx
@@ -360,4 +363,5 @@ if __name__ == '__main__':
 		app.run()
 	except Exception as e:
 		print(e)
-		t.join()
+		cl()
+	cl()

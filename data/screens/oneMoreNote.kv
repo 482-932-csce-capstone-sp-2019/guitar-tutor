@@ -1,8 +1,28 @@
+# This part is for centering the chords by 'sticking' it to a template
+<CGridLayout@BoxLayout+TunerBackgroundColor>
+<TunerBackgroundColor@Widget>
+    pos_hint: {'center_x': .5, 'center_y': .7}
+    size_hint: .5, .5
+    canvas.before:
+        Color:
+            rgba: .2, .3, .4, 0
+        Rectangle:
+            size: self.size
+            pos: self.pos
+
 GuitarScreen:
     # Name of the screen
 	name: "OneMoreNote"
 	
 	# fullscreen helps with getting the contents formatted correctly
 	fullscreen: True
-    OnScreenTab:
+    FloatLayout:
+        OneMoreNoteWidget:
+            pos: self.pos
+
+<OneMoreNoteWidget>:
+    Label:
+        text: "Play one more note to continue"
+        font_size: '144dp'
         pos: self.pos
+        size: root.size
