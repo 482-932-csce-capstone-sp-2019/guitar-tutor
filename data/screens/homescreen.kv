@@ -33,9 +33,9 @@ GuitarScreen:
 		height: '48dp'
 		text: 'Simon Says Challenge'
 		on_release: app.go_screen(4)
-
+		
 	Button:
 		size_hint_y: None
 		height: '48dp'
 		text: 'Tuner'
-		on_release: app.go_screen(5)
+		on_release: app.go_screen(5), app.do_tuning(), app.start_tuner()

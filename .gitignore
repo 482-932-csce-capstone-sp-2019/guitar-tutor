@@ -51,3 +51,6 @@ coverage.xml
 docs/_build/
 Parsing/__pycache__/Parser.cpython-37.pyc
 Note Recognition, etc/__pycache__/SoundDriver.cpython-37.pyc
+Arduino/__pycache__/Chords.cpython-37.pyc
+Parsing/__pycache__/Parser.cpython-37.pyc
+*.pyc

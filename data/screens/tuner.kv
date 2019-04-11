@@ -1,36 +1,8 @@
-# This part is for centering the chords by 'sticking' it to a template
-<CGridLayout@BoxLayout+TunerBackgroundColor>
-<TunerBackgroundColor@Widget>
-    pos_hint: {'center_x': .5, 'center_y': .7}
-    size_hint: .5, .5
-    canvas.before:
-        Color:
-            rgba: .2, .3, .4, 0
-        Rectangle:
-            size: self.size
-            pos: self.pos
-
 GuitarScreen:
     name: "Tuner"
-
     fullscreen: True
-
-    FloatLayout:
-        CGridLayout:
-            columns: 1
-            rows: 3
-            Label: 
-                text: "| | | | | | | | | | |"
-                font_size: '144dp'
-                size_hint_y: None
-    
-    SlidingTunerBar:
-        pos: 300,300
-
-<SlidingTunerBar>:
-    canvas:
-        Color:
-            rgba: 1, 0, 0, 1
-        Rectangle:
-            pos: self.pos
-            size: root.size
+	layout: tuner_page
+	
+	BoxLayout:
+		orientation: 'vertical'
+		id: tuner_page
