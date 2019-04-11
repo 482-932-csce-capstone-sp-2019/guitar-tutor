@@ -249,16 +249,16 @@ class GuitarApp(App):
 		label = Label()
 		title = Label()
 		
-		cents = cents * 10
+		cents = cents * 100
 		
 		# text to tune up or down
 		tuner_text = ''
 		label.color = [1, 0, 0, 1]
 		
-		if np.greater(-0.1,cents):
+		if np.greater(-10.0,cents):
 			tuner_text = 'Tune Up \n{:+.2f} cents'.format(cents)
 		
-		if np.greater(cents, 0.1):
+		if np.greater(cents, 10.0):
 			tuner_text = 'Tune Down \n{:+.2f} cents'.format(cents)
 			
 		if tuner_text == '':
