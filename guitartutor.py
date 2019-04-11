@@ -13,6 +13,8 @@ import builtins
 import random
 import time
 
+import threading
+
 # Used to get directory to different 'screens'
 import os
 from os.path import dirname, join
@@ -28,8 +30,14 @@ from kivy.lang import Builder
 import glob
 # Use this to get names of tabs and paste them to buttons
 import re
+
+import numpy as np
+import pyaudio
+
 # Use this for making buttons dynamically
 from kivy.uix.button import Button
+from kivy.uix.label import Label
+
 
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.label import Label
@@ -161,6 +169,38 @@ class LoadDialog(FloatLayout):
     load = ObjectProperty(None)
     cancel = ObjectProperty(None)
 
+class GuitarScreen(Screen):
+	fullscreen = BooleanProperty(False)
+
+	# This function adds the widget to the window, we need this to display the pages
+	def add_widget(self, *args):
+		if 'content' in self.ids:
+			return self.ids.content.add_widget(*args)
+		return super(GuitarScreen, self).add_widget(*args)
+		
+	def dismiss_popup(self):
+		self._popup.dismiss()
+
+	def show_load(self):
+		content = LoadDialog(load=self.load, cancel=self.dismiss_popup)
+		self._popup = Popup(title="Load file", content=content, size_hint=(0.9, 0.9))
+		self._popup.open()
+
+	def load(self, path, filename):
+		shutil.copy(os.path.join(path, filename[0]), os.path.abspath(os.path.join('.','data/tabs')))
+		content = Button(text='Success')
+		popup = Popup(title='Result', content=content,  size_hint=(None, None), size=(200, 200), auto_dismiss=False)		
+		content.bind(on_press=popup.dismiss)
+		popup.open()
+		self.dismiss_popup()
+	
+	def update(self):
+		global t
+		print('pp')
+		if app.current_title() == 'PlayingTab':
+			if not t.isAlive():
+				app.go_screen(3)
+
 class GuitarApp(App):
 	loadfile = ObjectProperty(None)
 	savefile = ObjectProperty(None)
@@ -239,13 +279,63 @@ class GuitarApp(App):
 		screen = Builder.load_file(self.available_screens[index])
 		self.screens[index] = screen
 		return screen
+		
+	def start_tuner(*args):
+		set_Done_Tuning(False)
+		t1 = threading.Thread(target = tune)
+		t1.daemon = True
+		t1.start()
+	
+	def stop_tuner(*args):
+		set_Done_Tuning(True)
+		
+	def do_tuning(self):
+		tuner_page = self.screens[5].layout
+		tuner_page.clear_widgets()
+		
+		button = Label()
+		button.text = 'Starting Tuner...'
+		button.font_size = '20dp'
+		button.bind(on_release = app.start_tuner)
+		tuner_page.add_widget(button)
+		
+	def update_tuner(self, note_name, cents):
+		tuner_page = self.screens[5].layout
+		tuner_page.clear_widgets()
+		
+		label = Label()
+		title = Label()
+		
+		cents = cents * 100
+		
+		# text to tune up or down
+		tuner_text = ''
+		label.color = [1, 0, 0, 1]
+		
+		if np.greater(-10.0,cents):
+			tuner_text = 'Tune Up \n{:+.2f} cents'.format(cents)
+		
+		if np.greater(cents, 10.0):
+			tuner_text = 'Tune Down \n{:+.2f} cents'.format(cents)
+			
+		if tuner_text == '':
+			tuner_text = 'In Tune \n{:+.2f} cents'.format(cents)
+			label.color = [0, 1, 0, 1]
+		
+		title.text = tuner_text
+		label.text = note_name
+		label.font_size = '100dp'
+		
+		
+		tuner_page.add_widget(title)
+		tuner_page.add_widget(label)
 	
 	# Dynamically make buttons for all tab files in the tabs folder
 	def load_tabs(self, tab_page):
-		#tab_page.bind(minimum_height=tab_page.setter('height'))
 		# delete all previous buttons!
 		# this way we don't duplicate buttons
 		tab_page.clear_widgets()
+
 		# Grab all tab files using glob
 		path = 'data/tabs/*.txt'
 		files = sorted(glob.glob(path))
@@ -351,12 +441,124 @@ def play_tab(tab, *args):
 	setDoneWithTab(False)
 	global t
 	t = threading.Thread(target=lightGuitar, args=(song,))
+	t.daemon = True
 	t.start()
 	app.go_screen(app.playingTabIdx)
 	pass
 
+	
+########################TUNER######################################	
+'''
+	Credits: 
+		GitHub user handles: mzucker, michniewicz
+		URL: https://github.com/michniewicz/python-tuner/graphs/contributors
+		
+'''
+
+#! /usr/bin/env python
+
+NOTE_MIN = 40       # E2
+NOTE_MAX = 64       # E4
+FSAMP = 22050       # Sampling frequency in Hz
+FRAME_SIZE = 2048   # samples per frame
+FRAMES_PER_FFT = 16  # FFT takes average across how many frames?
+
+######################################################################
+# Derived quantities from constants above. Note that as
+# SAMPLES_PER_FFT goes up, the frequency step size decreases (sof
+# resolution increases); however, it will incur more delay to process
+# new sounds.
+
+SAMPLES_PER_FFT = FRAME_SIZE * FRAMES_PER_FFT
+FREQ_STEP = float(FSAMP) / SAMPLES_PER_FFT
+
+######################################################################
+# For printing out notes
+
+NOTE_NAMES = 'E F F# G G# A A# B C C# D D#'.split()
 
 
+######################################################################
+# These three functions are based upon this very useful webpage:
+# https://newt.phys.unsw.edu.au/jw/notes.html
+
+def freq_to_number(f): return 64 + 12 * np.log2(f / 329.63)
+
+
+def number_to_freq(n): return 329.63 * 2.0**((n - 64) / 12.0)
+
+
+def note_name(n):
+    return NOTE_NAMES[n % NOTE_MIN % len(NOTE_NAMES)] + str(int(n / 12 - 1))
+
+######################################################################
+# Ok, ready to go now.
+
+# Get min/max index within FFT of notes we care about.
+# See docs for numpy.rfftfreq()
+
+
+def note_to_fftbin(n): return number_to_freq(n) / FREQ_STEP
+
+
+Done_Tuning = False
+
+def set_Done_Tuning(state):
+	global Done_Tuning
+	Done_Tuning = state
+
+def tune():
+
+	imin = max(0, int(np.floor(note_to_fftbin(NOTE_MIN - 1))))
+	imax = min(SAMPLES_PER_FFT, int(np.ceil(note_to_fftbin(NOTE_MAX + 1))))
+
+	# Allocate space to run an FFT.
+	buf = np.zeros(SAMPLES_PER_FFT, dtype=np.float32)
+	num_frames = 0
+
+	# Initialize audio
+	stream = pyaudio.PyAudio().open(format=pyaudio.paInt16,
+									channels=1,
+									rate=FSAMP,
+									input=True,
+									frames_per_buffer=FRAME_SIZE)
+
+	stream.start_stream()
+
+	# Create Hanning window function
+	window = 0.5 * (1 - np.cos(np.linspace(0, 2 * np.pi, SAMPLES_PER_FFT, False)))
+
+	# Print initial text
+	#print('sampling at', FSAMP, 'Hz with max resolution of', FREQ_STEP, 'Hz')
+	#print()
+
+	global Done_Tuning
+	
+	# As long as we are getting data:
+	while stream.is_active() and not Done_Tuning:
+
+		# Shift the buffer down and new data in
+		buf[:-FRAME_SIZE] = buf[FRAME_SIZE:]
+		buf[-FRAME_SIZE:] = np.frombuffer(stream.read(FRAME_SIZE), np.int16)
+
+		# Run the FFT on the windowed buffer
+		fft = np.fft.rfft(buf * window)
+
+		# Get frequency of maximum response in range
+		freq = (np.abs(fft[imin:imax]).argmax() + imin) * FREQ_STEP
+
+		# Get note number and nearest note
+		n = freq_to_number(freq)
+		n0 = int(round(n))
+
+		# Console output once we have a full buffer
+		num_frames += 1
+
+		if num_frames >= FRAMES_PER_FFT:
+			app.update_tuner(note_name(n0),n - n0)
+			#print('number {:7.2f} freq: {:7.2f} Hz     note: {:>3s} {:+.2f}'.format(n,
+			#																		freq, note_name(n0), n - n0))
+	stream.close()
 
 if __name__ == '__main__':
 	try:
