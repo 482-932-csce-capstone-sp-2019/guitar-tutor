@@ -105,6 +105,16 @@ class SlidingTunerBar(Widget):
 		if self.y < 0 or (self.y + self.height) > Window.height:
 			self.velocity[1] *= -1
 
+class OneMoreNoteWidget(Widget):
+	def __init__(self, **kwargs):
+		super(OneMoreNoteWidget, self).__init__(**kwargs)
+		oneMoreNoteClock = Clock.schedule_interval(self.update, 1/60.)
+	
+	def update(self):
+		if not t.isAlive():
+			app.go_screen(app.homeScreenIdx)
+			oneMoreNoteClock.cancel()
+
 song = 0
 
 def getFretPressed(frets):
@@ -209,8 +219,11 @@ class GuitarApp(App):
 		self.go_screen(self.homeScreenIdx)
 
 	def go_screen(self, idx):
-
 		cl()
+		if(t.isAlive()):
+			self.index = self.oneMoreNoteIdx
+			self.root.ids.sm.switch_to(self.load_screen(self.oneMoreNoteIdx), direction="left")
+			return
 		if(self.index != idx):
 			self.index = idx
 			self.root.ids.sm.switch_to(self.load_screen(idx), direction="left")
@@ -274,9 +287,10 @@ class GuitarApp(App):
 			tab_page.add_widget(button)
 	
 	def stopTab(self):
-		setDoneWithTab(True)
-		cl()
-		app.go_screen(self.oneMoreNoteIdx)
+		if (not getDoneWithTab()):
+			setDoneWithTab(True)
+			cl()
+			app.go_screen(self.oneMoreNoteIdx)
 
 app = GuitarApp()
 

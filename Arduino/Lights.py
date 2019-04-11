@@ -106,7 +106,6 @@ def lightGuitar(song):
     global note
     global measure
     global fret
-    doneWithTab = false
 
     # if the arduino is not connected, just exit
     if (noArduinoMode):
