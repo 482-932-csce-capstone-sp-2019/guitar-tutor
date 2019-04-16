@@ -49,13 +49,12 @@ def onOffFunction(fret, string):
         arduino.write(byt)
 
 def clearLights(note = []):
+    out = None
     print("Note length is:", len(note))
     if getDoneWithTab():
         pressed = True
     else:
-        a1.waitForOnset(note)
-
-    print("fuck me")
+        out = a1.waitForOnset(note)
       
     n = int("0",2)
     byt = bytes([n])
@@ -100,7 +99,10 @@ def getSongPosition():
 
 # Loops through the data structure and lights the appropriate lights.
 # this is meant to be run as a thread alongside the actual application
-def lightGuitar(song):
+def lightGuitar(song, tab_name):
+    a1.correctNotes = 0
+    a1.totalNotes = 0 
+    a1.incorrectNotes = 0
     global noArduinoMode
     global doneWithTab
     global note
@@ -151,7 +153,7 @@ def lightGuitar(song):
                     n = clearLights(renderedNote)
                     if (n == -1):
                         a1.port.close()
-                        print("Die")
+                        #print("Die")
                         cl()
                         exit()
                     note += n
@@ -163,6 +165,16 @@ def lightGuitar(song):
     except KeyboardInterrupt:
         a1.port.close()
         cl()
-    print(a1.correctNotes/a1.totalNotes)
+    curScore = a1.correctNotes/(a1.correctNotes + a1.incorrectNotes)
+    print("Score: " + str(curScore))
+    fileName = os.path.abspath(os.path.join('.', 'Scores/', (tab_name + '.txt')))
+    scores = []
+    # open file and read the content in a list
+    with open(fileName, 'r+') as filehandle:  
+        scores = [float(score.rstrip()) for score in filehandle.readlines()]
+    scores.append(curScore)
+    scores = sorted(scores)
+    with open(fileName, 'w+') as filehandle:  
+        filehandle.writelines("%s\n" % score for score in scores)
 # onOffFunction('{0:05b}'.format(1), '{0:03b}'.format(3))
 time.sleep(2) #waiting the initialization...
