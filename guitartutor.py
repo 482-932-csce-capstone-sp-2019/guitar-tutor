@@ -71,6 +71,59 @@ from SoundDriver import setDoneWithTab
 # made it a global to reflect this
 t = threading.Thread()
 
+# gets a random chord name from a list of all implemented chords
+# used for simon says game
+def getRandomChord():
+	possibleChords = ["a","a7","am","am7","amaj7","bf","b7","bm","c","c7","cmaj7","d","dm","d7","dm7","dmaj7","e","e7","em","em7","f","fmaj7","g","g7"]
+	return random.choice(possibleChords)
+
+# This is the widget for the simon says game
+class SimonSaysWidget(Widget):
+	chordList = ListProperty([])
+	nextChord = StringProperty()
+
+	def __init__(self, **kwargs):
+		super(SimonSaysWidget, self).__init__(**kwargs)
+		self.addChord()
+
+	def displayChord(self, chord):
+		cl()
+		chords(chord)
+	
+	def addChord(self):
+		newChord = getRandomChord()
+		chordList.append(newChord)
+		nextChord = newChord
+		
+
+# This is the class that Identifies the little bar on the tuner
+class SlidingTunerBar(Widget):
+	velocity = ListProperty([10, 15])
+
+	def __init__(self, **kwargs):
+		super(SlidingTunerBar, self).__init__(**kwargs)
+		Clock.schedule_interval(self.update, 1/60.)
+	
+	def update(self, *args):
+		self.x += self.velocity[0]
+		self.y += self.velocity[1]
+
+		if self.x < 0 or (self.x + self.width) > Window.width:
+			self.velocity[0] *= -1
+		if self.y < 0 or (self.y + self.height) > Window.height:
+			self.velocity[1] *= -1
+
+class OneMoreNoteWidget(Widget):
+	oneMoreNoteClock = 0
+	def __init__(self, **kwargs):
+		super(OneMoreNoteWidget, self).__init__(**kwargs)
+		self.oneMoreNoteClock = Clock.schedule_interval(self.update, 1/60.)
+	
+	def update(self, *args):
+		if not t.isAlive():
+			app.go_screen(app.homeScreenIdx)
+			self.oneMoreNoteClock.cancel()
+
 song = 0
 
 def getFretPressed(frets):
@@ -112,45 +165,9 @@ class OnScreenTab(Widget):
 		# self.stringE = getFretPressed(song["E"][measure][note])
 
 
-# This will be the class representing each screen
-# There is currently no logic in each screen
-
-
 class LoadDialog(FloatLayout):
     load = ObjectProperty(None)
     cancel = ObjectProperty(None)
-
-class GuitarScreen(Screen):
-	fullscreen = BooleanProperty(False)
-
-	# This function adds the widget to the window, we need this to display the pages
-	def add_widget(self, *args):
-		if 'content' in self.ids:
-			return self.ids.content.add_widget(*args)
-		return super(GuitarScreen, self).add_widget(*args)
-		
-	def dismiss_popup(self):
-		self._popup.dismiss()
-
-	def show_load(self):
-		content = LoadDialog(load=self.load, cancel=self.dismiss_popup)
-		self._popup = Popup(title="Load file", content=content, size_hint=(0.9, 0.9))
-		self._popup.open()
-
-	def load(self, path, filename):
-		shutil.copy(os.path.join(path, filename[0]), os.path.abspath(os.path.join('.','data/tabs')))
-		content = Button(text='Success')
-		popup = Popup(title='Result', content=content,  size_hint=(None, None), size=(200, 200), auto_dismiss=False)		
-		content.bind(on_press=popup.dismiss)
-		popup.open()
-		self.dismiss_popup()
-	
-	def update(self):
-		global t
-		print('pp')
-		if app.current_title() == 'PlayingTab':
-			if not t.isAlive():
-				app.go_screen(3)
 
 class GuitarApp(App):
 	loadfile = ObjectProperty(None)
@@ -169,13 +186,6 @@ class GuitarApp(App):
 	def displayChord(self, chord):
 		cl()
 		chords(chord)
-
-	# gets a random chord name from a list of all implemented chords
-	# used for simon says game
-
-	def getRandomChord(self):
-		possibleChords = ["a","a7","am","am7","amaj7","bf","b7","bm","c","c7","cmaj7","d","dm","d7","dm7","dmaj7","e","e7","em","em7","f","fmaj7","g","g7"]
-		return random.choice(possibleChords)
 
 	# demo simon says
 	# still need to make it listen
@@ -196,8 +206,17 @@ class GuitarApp(App):
 		self.screens = {}
 		# Add screens to the list
 		self.available_screens = ["HomeScreen", "ChordLibrary",
-			"TabLibrary", "AddTab", "Challenge", "Tuner", "PlayingTab"]
-
+			"TabLibrary", "AddTab", "Challenge", "Tuner", "PlayingTab", 
+			"SimonSays", "OneMoreNote"]
+		self.homeScreenIdx = 0
+		self.chordLibraryIdx = 1
+		self.tabLibraryIdx = 2
+		self.addTabIdx = 3
+		self.challengeIdx = 4
+		self.tunerIdx = 5
+		self.playingTabIdx = 6
+		self.simonSaysIdx = 7
+		self.oneMoreNoteIdx = 8
 		# Remember names of screens, used for loading files
 		self.screen_names = self.available_screens
 		# Get current directory
@@ -206,10 +225,16 @@ class GuitarApp(App):
 		self.available_screens = [join(curdir, 'data', 'screens',
 			'{}.kv'.format(fn).lower()) for fn in self.available_screens]
 		# Initialize first screen (index 0)
-		self.go_screen(0)
+		self.go_screen(self.homeScreenIdx)
 
 	def go_screen(self, idx):
 		cl()
+		if(t.isAlive() and self.index != self.oneMoreNoteIdx and self.index != self.tabLibraryIdx):
+			self.index = self.oneMoreNoteIdx
+			self.root.ids.sm.switch_to(self.load_screen(self.oneMoreNoteIdx), direction="left")
+			return
+		elif(t.isAlive() and self.index == self.oneMoreNoteIdx):
+			return
 		if(self.index != idx):
 			self.index = idx
 			self.root.ids.sm.switch_to(self.load_screen(idx), direction="left")
@@ -323,8 +348,10 @@ class GuitarApp(App):
 			tab_page.add_widget(button)
 	
 	def stopTab(self):
-		setDoneWithTab(True)
-		cl()
+		if (not getDoneWithTab()):
+			setDoneWithTab(True)
+			cl()
+			app.go_screen(self.oneMoreNoteIdx)
 
 app = GuitarApp()
 
@@ -332,9 +359,42 @@ def stopPlayingTabCheck(dt):
 	global onScreenTabClock
 	if app.index == 6 and not t.isAlive():
 		onScreenTabClock.cancel()
-		app.go_screen(2)
+		app.go_screen(app.tabLibraryIdx)
 
 Clock.schedule_interval(stopPlayingTabCheck, .1)
+
+class GuitarScreen(Screen):
+	fullscreen = BooleanProperty(False)
+
+	# This function adds the widget to the window, we need this to display the pages
+	def add_widget(self, *args):
+		if 'content' in self.ids:
+			return self.ids.content.add_widget(*args)
+		return super(GuitarScreen, self).add_widget(*args)
+		
+	def dismiss_popup(self):
+		self._popup.dismiss()
+
+	def show_load(self):
+		content = LoadDialog(load=self.load, cancel=self.dismiss_popup)
+		self._popup = Popup(title="Load file", content=content, size_hint=(0.9, 0.9))
+		self._popup.open()
+
+	def load(self, path, filename):
+		shutil.copy(os.path.join(path, filename[0]), os.path.abspath(os.path.join('.','data/tabs')))
+		content = Button(text='Success')
+		popup = Popup(title='Result', content=content,  size_hint=(None, None), size=(200, 200), auto_dismiss=False)		
+		content.bind(on_press=popup.dismiss)
+		popup.open()
+		self.dismiss_popup()
+	
+	def update(self):
+		global t
+		print('pp')
+		if app.current_title() == 'PlayingTab':
+			if not t.isAlive():
+				app.go_screen(app.addTabIdx)
+
 # This is the function that listens to the dynamic buttons
 # When a button is pressed this function is called with the 
 # button returned as an argument.
@@ -351,7 +411,7 @@ def play_tab(tab, *args):
 	t = threading.Thread(target=lightGuitar, args=(song,))
 	t.daemon = True
 	t.start()
-	app.go_screen(6)
+	app.go_screen(app.playingTabIdx)
 	pass
 
 	
@@ -473,4 +533,5 @@ if __name__ == '__main__':
 		app.run()
 	except Exception as e:
 		print(e)
-		t.join()
+		cl()
+	cl()
