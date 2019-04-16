@@ -1,14 +1,6 @@
 GuitarScreen:
 	name: 'AddTab'
-    BoxLayout:
-        orientation: 'vertical'
-        BoxLayout:
-            size_hint_y: None
-            height: 30
-            Button:
-                text: 'Load'
-                on_release: root.show_load()
-
+	fullscreen: True
 <LoadDialog>:
     BoxLayout:
         size: root.size
@@ -23,11 +15,11 @@ GuitarScreen:
             height: 30
             Button:
                 text: "Cancel"
-                on_release: root.cancel()
+                on_release: root.cancel(), app.go_screen(0)
 
             Button:
                 text: "Load"
-                on_release: root.load(filechooser.path, filechooser.selection)
+                on_release: root.load(filechooser.path, filechooser.selection), app.go_screen(0)
 
 <MyPopup@Popup>:
     auto_dismiss: False

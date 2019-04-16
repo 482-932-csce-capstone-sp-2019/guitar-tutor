@@ -3,6 +3,13 @@ GuitarScreen:
     fullscreen: True
 	layout: tuner_page
 	
+	ActionBar:
+		background_color: 0, 0, 0 ,0
+		ActionView:
+			ActionPrevious:
+				app_icon: 'data/icons/home.png'
+				on_release: app.go_screen(0), app.stop_tuner(), app.stopTab()
+	
 	BoxLayout:
 		orientation: 'vertical'
 		id: tuner_page

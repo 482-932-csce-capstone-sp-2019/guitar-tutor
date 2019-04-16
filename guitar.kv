@@ -46,13 +46,6 @@ BoxLayout:
 			size: self.size
 			source: 'data/backgrounds/background.png'
 	
-	ActionBar:
-		
-		ActionView:
-			ActionPrevious:
-				app_icon: 'data/icons/home.png'
-				on_release: app.go_screen(0), app.stop_tuner(), app.stopTab()
-	
 	ScreenManager:
 		id: sm
 		on_current_screen: idx = app.screen_names.index(args[1].name)
