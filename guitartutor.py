@@ -46,6 +46,7 @@ from kivy.uix.popup import Popup
 from kivy.uix.widget import Widget
 from kivy.clock import Clock
 from kivy.core.window import Window
+from kivy.animation import Animation
 
 import threading
 from queue import Queue
@@ -95,24 +96,6 @@ class SimonSaysWidget(Widget):
 		chordList.append(newChord)
 		nextChord = newChord
 		
-
-# This is the class that Identifies the little bar on the tuner
-class SlidingTunerBar(Widget):
-	velocity = ListProperty([10, 15])
-
-	def __init__(self, **kwargs):
-		super(SlidingTunerBar, self).__init__(**kwargs)
-		Clock.schedule_interval(self.update, 1/60.)
-	
-	def update(self, *args):
-		self.x += self.velocity[0]
-		self.y += self.velocity[1]
-
-		if self.x < 0 or (self.x + self.width) > Window.width:
-			self.velocity[0] *= -1
-		if self.y < 0 or (self.y + self.height) > Window.height:
-			self.velocity[1] *= -1
-
 class OneMoreNoteWidget(Widget):
 	oneMoreNoteClock = 0
 	def __init__(self, **kwargs):
@@ -173,6 +156,8 @@ class GuitarApp(App):
 	loadfile = ObjectProperty(None)
 	savefile = ObjectProperty(None)
 	text_input = ObjectProperty(None)
+	sourcecode = StringProperty()
+	show_sourcecode = BooleanProperty(False)
 	
 	# Use index to cycle through screens
 	index = NumericProperty(-1)
@@ -227,6 +212,37 @@ class GuitarApp(App):
 		# Initialize first screen (index 0)
 		self.go_screen(self.homeScreenIdx)
 
+	#Testing with showing source code
+	def toggle_source_code(self,*args):
+		self.show_sourcecode = not self.show_sourcecode
+		if self.show_sourcecode:
+			height = self.root.height * .5
+		else:
+			height = 0
+
+		Animation(height=height, d=.3, t='out_quart').start(
+				self.root.ids.sv)
+		
+		if not self.show_sourcecode:
+			self.root.ids.sourcecode.focus = False
+			return
+		else:
+			self.update_sourcecode(args[0])
+		
+	def read_sourcecode(self, *args):
+		fn = self.available_screens[self.index]
+		curdir = dirname(__file__)
+		fn = args[0].text
+		fn = join(curdir, 'data', 'tabs', '{}.txt'.format(fn))
+
+		with open(fn) as fd:
+			return fd.read()
+	
+	def update_sourcecode(self, *args):
+		self.root.ids.sourcecode.text = self.read_sourcecode(args[0])
+		self.root.ids.sv.scroll_y = 1
+		self.root.ids.sv.scroll_x = 1
+	
 	def go_screen(self, idx):
 		cl()
 		if(t.isAlive() and self.index != self.oneMoreNoteIdx and self.index != self.tabLibraryIdx):
@@ -344,6 +360,7 @@ class GuitarApp(App):
 			button.size_hint = (.2, .2)
 			# Add function to button
 			button.bind(on_release = play_tab)
+			button.bind(on_release = self.toggle_source_code)
 			# Add button!
 			tab_page.add_widget(button)
 	
@@ -351,6 +368,7 @@ class GuitarApp(App):
 		if (not getDoneWithTab()):
 			setDoneWithTab(True)
 			cl()
+			app.toggle_source_code()
 			app.go_screen(self.oneMoreNoteIdx)
 
 app = GuitarApp()
@@ -359,6 +377,7 @@ def stopPlayingTabCheck(dt):
 	global onScreenTabClock
 	if app.index == 6 and not t.isAlive():
 		onScreenTabClock.cancel()
+		app.toggle_source_code()
 		app.go_screen(app.tabLibraryIdx)
 
 Clock.schedule_interval(stopPlayingTabCheck, .1)
@@ -403,7 +422,7 @@ class GuitarScreen(Screen):
 # The text member has just the file name without the .txt
 def play_tab(tab, *args):
 	global song
-
+	
 	fn = tab.text + '.txt'
 	song = parser(fn)
 	setDoneWithTab(False)
@@ -411,7 +430,7 @@ def play_tab(tab, *args):
 	t = threading.Thread(target=lightGuitar, args=(song,))
 	t.daemon = True
 	t.start()
-	app.go_screen(app.playingTabIdx)
+	#app.go_screen(app.playingTabIdx)
 	pass
 
 	

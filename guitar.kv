@@ -1,4 +1,5 @@
 #:import Factory kivy.factory.Factory
+#:import KivyLexer kivy.extras.highlight.KivyLexer
 
 <ActionSpinnerOptions@SpinnerOption>
 	background_color: .4, .4, .4, 1
@@ -45,6 +46,22 @@ BoxLayout:
 		Rectangle:
 			size: self.size
 			source: 'data/backgrounds/background.png'
+			
+	ScrollView:
+		id: sv
+		size_hint_y: None
+		height: 0
+		
+		CodeInput:
+			id: sourcecode
+			lexer: KivyLexer()
+			text: app.sourcecode
+			readonly: True
+			size_hint_y: None
+			size_hint_x: None
+			font_size: '20sp'
+			height: self.minimum_height
+			width: sv.width
 	
 	ScreenManager:
 		id: sm
