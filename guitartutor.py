@@ -105,6 +105,8 @@ class SlidingTunerBar(Widget):
 		if self.y < 0 or (self.y + self.height) > Window.height:
 			self.velocity[1] *= -1
 
+fockenEll = 0
+
 class OneMoreNoteWidget(Widget):
 	oneMoreNoteClock = 0
 	def __init__(self, **kwargs):
@@ -112,9 +114,8 @@ class OneMoreNoteWidget(Widget):
 		self.oneMoreNoteClock = Clock.schedule_interval(self.update, 1/60.)
 	
 	def update(self, *args):
-		if not t.isAlive():
+		if not t.isAlive() and app.index == app.oneMoreNoteIdx:
 			app.go_screen(app.homeScreenIdx)
-			self.oneMoreNoteClock.cancel()
 
 song = 0
 
@@ -351,6 +352,7 @@ def play_tab(tab, *args):
 	setDoneWithTab(False)
 	global t
 	t = threading.Thread(target=lightGuitar, args=(song,))
+	t.daemon = True
 	t.start()
 	app.go_screen(app.playingTabIdx)
 	pass
