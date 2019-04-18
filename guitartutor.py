@@ -103,9 +103,8 @@ class OneMoreNoteWidget(Widget):
 		self.oneMoreNoteClock = Clock.schedule_interval(self.update, 1/60.)
 	
 	def update(self, *args):
-		if not t.isAlive():
+		if not t.isAlive() and app.index == app.oneMoreNoteIdx:
 			app.go_screen(app.homeScreenIdx)
-			self.oneMoreNoteClock.cancel()
 
 song = 0
 
