@@ -71,6 +71,7 @@ class NoteRecognizer():
 		self.p.set_tolerance(tolerance)
 		self.correctNotes = 0
 		self.totalNotes = 0
+		self.incorrectNotes = 0
 
 	
 	# while displaying the next note, wait for the new note to begin, and grade the currently held note
@@ -82,6 +83,7 @@ class NoteRecognizer():
 		#print(next)
 		print(len(next))
 		totalLength = 0
+		num_incorrect = 0
 		#correctTone = 0
 		#tp = self.notelist[self.currentNote] #target pitch		
 		# In the absence of a do while loop, read, then begin looping
@@ -139,6 +141,8 @@ class NoteRecognizer():
 				print(ct)
 			if sum_correct == len(self.currentNote):
 				break
+			else:
+				num_incorrect += 1
 					
 			# read again
 			#vec = self.s.read(CHUNK)
@@ -153,6 +157,7 @@ class NoteRecognizer():
 		self.port.close()
 		if totalLength != 0:
 			self.correctNotes += 1
+			self.incorrectNotes += num_incorrect
 			return None, None, float(ct)/float(totalLength)
 		return None, None, None
 		

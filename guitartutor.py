@@ -244,7 +244,7 @@ class GuitarApp(App):
 		self.root.ids.sv.scroll_x = 1
 	
 	def go_screen(self, idx):
-		cl()
+		#cl()
 		if(t.isAlive() and self.index != self.oneMoreNoteIdx and self.index != self.tabLibraryIdx):
 			self.index = self.oneMoreNoteIdx
 			self.root.ids.sm.switch_to(self.load_screen(self.oneMoreNoteIdx), direction="left")
@@ -347,6 +347,11 @@ class GuitarApp(App):
 		# Sort names just in case. Now index in files and file_names are the same!
 		# We can use this to open the correct file
 		file_names = sorted(file_names)
+
+		for name in file_names:
+			fileName = os.path.abspath(os.path.join('.', 'Scores/', (name + '.txt')))
+			f = open(fileName, 'a')
+			f.close()
 		
 		# Dynamically create a button for each tab
 		for tab in range(len(file_names)):
@@ -427,7 +432,7 @@ def play_tab(tab, *args):
 	song = parser(fn)
 	setDoneWithTab(False)
 	global t
-	t = threading.Thread(target=lightGuitar, args=(song,))
+	t = threading.Thread(target=lightGuitar, args=(song, tab.text))
 	t.daemon = True
 	t.start()
 	#app.go_screen(app.playingTabIdx)
