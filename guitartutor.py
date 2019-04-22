@@ -216,17 +216,19 @@ class GuitarApp(App):
 		self.show_sourcecode = not self.show_sourcecode
 		if self.show_sourcecode:
 			height = self.root.height * .5
-		else:
-			height = 0
-
-		Animation(height=height, d=.3, t='out_quart').start(
+			
+			Animation(height=height, d=.3, t='out_quart').start(
 				self.root.ids.sv)
 		
-		if not self.show_sourcecode:
-			self.root.ids.sourcecode.focus = False
-			return
-		else:
 			self.update_sourcecode(args[0])
+		else:
+			height = 0
+			
+			Animation(height=height, d=.3, t='out_quart').start(
+				self.root.ids.sv)
+				
+	def quit_source_code(self, *args):
+		Animation(height=0, d=.3, t='out_quart').start(self.root.ids.sv)
 		
 	def read_sourcecode(self, *args):
 		fn = self.available_screens[self.index]
