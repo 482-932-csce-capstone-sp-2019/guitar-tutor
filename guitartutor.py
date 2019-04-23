@@ -157,6 +157,7 @@ class GuitarApp(App):
 	text_input = ObjectProperty(None)
 	sourcecode = StringProperty()
 	show_sourcecode = BooleanProperty(False)
+	currentlyPlayingTab = StringProperty()
 	
 	# Use index to cycle through screens
 	index = NumericProperty(-1)
@@ -191,7 +192,7 @@ class GuitarApp(App):
 		# Add screens to the list
 		self.available_screens = ["HomeScreen", "ChordLibrary",
 			"TabLibrary", "AddTab", "Challenge", "Tuner", "PlayingTab", 
-			"SimonSays", "OneMoreNote"]
+			"SimonSays", "OneMoreNote", "Scoreboard"]
 		self.homeScreenIdx = 0
 		self.chordLibraryIdx = 1
 		self.tabLibraryIdx = 2
@@ -201,6 +202,7 @@ class GuitarApp(App):
 		self.playingTabIdx = 6
 		self.simonSaysIdx = 7
 		self.oneMoreNoteIdx = 8
+		self.scoreboardIdx = 9
 		# Remember names of screens, used for loading files
 		self.screen_names = self.available_screens
 		# Get current directory
@@ -375,14 +377,24 @@ class GuitarApp(App):
 			app.toggle_source_code()
 			app.go_screen(self.oneMoreNoteIdx)
 
+	def getScores(self):
+		file = open("Scores/" + self.currentlyPlayingTab + ".txt")
+		scores = []
+		for line in file:
+			scores.append(line[:-1])
+		return scores
+
 app = GuitarApp()
+
+startedATab = False
 
 def stopPlayingTabCheck(dt):
 	global onScreenTabClock
-	if app.index == 6 and not t.isAlive():
-		onScreenTabClock.cancel()
+	global startedATab
+	if startedATab and not t.isAlive():
+		startedATab = False
 		app.toggle_source_code()
-		app.go_screen(app.tabLibraryIdx)
+		app.go_screen(app.scoreboardIdx)
 
 Clock.schedule_interval(stopPlayingTabCheck, .1)
 
@@ -426,7 +438,7 @@ class GuitarScreen(Screen):
 # The text member has just the file name without the .txt
 def play_tab(tab, *args):
 	global song
-	
+	global startedATab
 	fn = tab.text + '.txt'
 	song = parser(fn)
 	setDoneWithTab(False)
@@ -434,6 +446,9 @@ def play_tab(tab, *args):
 	t = threading.Thread(target=lightGuitar, args=(song, tab.text))
 	t.daemon = True
 	t.start()
+	startedATab = True
+	app.currentlyPlayingTab = tab.text
+	print(app.getScores())
 	#app.go_screen(app.playingTabIdx)
 	pass
 
@@ -552,9 +567,9 @@ def tune():
 	stream.close()
 
 if __name__ == '__main__':
-	try:
-		app.run()
-	except Exception as e:
-		print(e)
-		cl()
+	# try:
+	app.run()
+	# except Exception as e:
+		# print(e)
+		# cl()
 	cl()
