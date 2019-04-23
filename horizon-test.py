@@ -7,7 +7,7 @@ from kivy.lang import Builder
 # Based on code from https://github.com/kivy/kivy/wiki/Scrollable-Label
 
 with open('testing.txt', 'r') as file:
-    data = file.read()
+    data = file.read() 
 long_text = data
 Builder.load_string('''
 <ScrollableLabel>:
@@ -18,10 +18,8 @@ Builder.load_string('''
         text: root.text
 ''')
 
-
 class ScrollableLabel(ScrollView):
     text = StringProperty('')
-    
 
 class ScrollApp(App):
     def build(self):
@@ -29,3 +27,4 @@ class ScrollApp(App):
 
 if __name__ == "__main__":
     ScrollApp().run()
+ 

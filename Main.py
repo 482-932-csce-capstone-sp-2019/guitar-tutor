@@ -1,4 +1,6 @@
 from pyparsing import *
+from kivy.app import App
+from kivy.config import Config
 import fileinput
 import mido
 import os, sys
@@ -12,6 +14,11 @@ sys.path.append(c)
 from Lights import *
 from Parser import *
 from Chords import *
+Config.set('graphics', 'width', '300')
+Config.set('graphics', 'height', '200')
+
+class TestApp(App):
+    pass
 
 def main():
     # Parses and creates data structure.
