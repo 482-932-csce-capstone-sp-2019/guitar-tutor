@@ -379,12 +379,25 @@ class GuitarApp(App):
 			app.toggle_source_code()
 			app.go_screen(self.oneMoreNoteIdx)
 
-	def getScores(self):
+	def get5Scores(self):
 		file = open("Scores/" + self.currentlyPlayingTab + ".txt")
 		scores = []
 		for line in file:
 			scores.append(line[:-1])
-		return scores
+		scores.sort(reverse=True)
+		if len(scores) < 5:
+			for i in range(5 - len(scores)):
+				scores.append('')
+		return scores[:5]
+
+	def getLastScore(self):
+		file = open("Scores/" + self.currentlyPlayingTab + ".txt")
+		scores = []
+		for line in file:
+			scores.append(line[:-1])
+		if len(scores) < 1:
+			return ''
+		return scores[-1]
 
 app = GuitarApp()
 
@@ -397,6 +410,12 @@ def stopPlayingTabCheck(dt):
 		startedATab = False
 		app.toggle_source_code()
 		app.go_screen(app.scoreboardIdx)
+		app.screens[9].ids.LastScore.text = app.getLastScore()
+		app.screens[9].ids.Score1.text = '1. ' + app.get5Scores()[0]
+		app.screens[9].ids.Score2.text = '2. ' + app.get5Scores()[1]
+		app.screens[9].ids.Score3.text = '3. ' + app.get5Scores()[2]
+		app.screens[9].ids.Score4.text = '4. ' + app.get5Scores()[3]
+		app.screens[9].ids.Score5.text = '5. ' + app.get5Scores()[4]
 
 Clock.schedule_interval(stopPlayingTabCheck, .1)
 
@@ -450,7 +469,6 @@ def play_tab(tab, *args):
 	t.start()
 	startedATab = True
 	app.currentlyPlayingTab = tab.text
-	print(app.getScores())
 	#app.go_screen(app.playingTabIdx)
 	pass
 
