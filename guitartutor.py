@@ -390,6 +390,7 @@ Clock.schedule_interval(stopPlayingTabCheck, .1)
 
 class GuitarScreen(Screen):
 	fullscreen = BooleanProperty(False)
+	print(ac)
 
 	# This function adds the widget to the window, we need this to display the pages
 	def add_widget(self, *args):

@@ -7,6 +7,30 @@ sys.path.insert(0, 'C:/School/CSCE 482/GUITARTUTOR/Arduino')
 
 from Lights import *
 
+ac = "e|0|\nB|0|\nG|2|\nD|2|\nA|2|\nE|0|"
+a7c = "e|0|\nB|0|\nG|2|\nD|0|\nA|2|\nE|0|"
+amc = "e|0|\nB|0|\nG|2|\nD|2|\nA|1|\nE|0|"
+am7c = "e|0|\nB|0|\nG|2|\nD|0|\nA|1|\nE|0|"
+amaj7c = "e|0|\nB|0|\nG|2|\nD|1|\nA|2|\nE|0|"
+bfc = "e|0|\nB|1|\nG|3|\nD|3|\nA|3|\nE|0|"
+b7c = "e|0|\nB|2|\nG|1|\nD|2|\nA|0|\nE|2|"
+bmc = "e|0|\nB|2|\nG|4|\nD|4|\nA|3|\nE|0|"
+cc = "e|0|\nB|3|\nG|2|\nD|0|\nA|1|\nE|0|"
+c7c = "e|0|\nB|3|\nG|2|\nD|3|\nA|1|\nE|0|"
+cmaj7c = "e|0|\nB|2|\nG|4|\nD|4|\nA|3|\nE|0|"
+dc = "e|0|\nB|0|\nG|0|\nD|2|\nA|3|\nE|2|"
+d7c = "e|0|\nB|0|\nG|0|\nD|2|\nA|1|\nE|2|"
+dmc = "e|0|\nB|0|\nG|0|\nD|2|\nA|3|\nE|1|"
+dm7c = "e|0|\nB|0|\nG|0|\nD|2|\nA|1|\nE|1|"
+dmaj7c = "e|0|\nB|0|\nG|0|\nD|2|\nA|2|\nE|2|"
+ec = "e|0|\nB|2|\nG|2|\nD|1|\nA|0|\nE|0|"
+e7c = "e|0|\nB|2|\nG|0|\nD|1|\nA|0|\nE|0|"
+emc = "e|0|\nB|2|\nG|2|\nD|0|\nA|0|\nE|0|"
+em7c = "e|0|\nB|2|\nG|0|\nD|0|\nA|0|\nE|0|"
+fc = "e|1|\nB|3|\nG|3|\nD|2|\nA|1|\nE|1|"
+fmaj7c = "e|0|\nB|0|\nG|3|\nD|2|\nA|1|\nE|0|"
+gc = "e|3|\nB|2|\nG|0|\nD|0|\nA|0|\nE|3|"
+g7c = "e|3|\nB|2|\nG|0|\nD|0|\nA|0|\nE|1|"
 def chords(chord):
     if chord == "a":
         a()
@@ -25,11 +49,17 @@ def chords(chord):
     elif chord == "bm":
         bm()
     elif chord == "c":
-        c()
+        c
+c7
+cmaj7()
     elif chord == "c7":
-        c7()
+        c
+c7
+cmaj7()
     elif chord == "cmaj7":
-        cmaj7()
+        c
+c7
+cmaj7()
     elif chord == "d":
         d() 
     elif chord == "dm":
