@@ -7,6 +7,14 @@ Made in Python 3.6 using the following Open Source Python libraries:
 
 **PySerial**
 
+**Kivy**
+
+**MIDO**
+
+**python-rtmidi**
+
+**Pyaudio**
+
 Designed for use with device produced as part of this project, utilizing an Arduino. See paper for more detail on design of this project and software.
 
 In order to run this software, install all of the above libraries (ideally using a package managment sorftware like pip or conda). Plug the Arduino into COM4 on your device, and feed the audio from the guitar into your computer, setting it to the default recording device. If you wish, you can feed the guitar output through an amplifier before routing it to your machine.
