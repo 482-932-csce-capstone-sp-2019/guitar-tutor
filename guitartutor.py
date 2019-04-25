@@ -75,7 +75,7 @@ t = threading.Thread()
 # gets a random chord name from a list of all implemented chords
 # used for simon says game
 def getRandomChord():
-	possibleChords = [ac,a7c,,amc,am7c,amaj7c,bfc,b7c,bmc,cc,c7c,cmaj7c,dc,d7c,dmc,dm7c,dmaj7c,ec,e7c,emc,em7c,fc,fmaj7c,gc,g7c]
+	possibleChords = [ac,a7c,amc,am7c,amaj7c,bfc,b7c,bmc,cc,c7c,cmaj7c,dc,d7c,dmc,dm7c,dmaj7c,ec,e7c,emc,em7c,fc,fmaj7c,gc,g7c]
 	return random.choice(possibleChords)
 		
 class OneMoreNoteWidget(Widget):

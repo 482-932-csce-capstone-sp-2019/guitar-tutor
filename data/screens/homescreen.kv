@@ -13,29 +13,29 @@ GuitarScreen:
 		size_hint_y: None
 		height: '48dp'
 		text: 'Chord Library'
-		on_release: app.go_screen(1)
+		on_release: app.go_screen(app.chordLibraryIdx)
 
 	# When going to the tabs library, we must call load_tabs to populate the page
 	Button:
 		size_hint_y: None
 		height: '48dp'
 		text: 'Tab Library'
-		on_release: app.go_screen(2), app.load_tabs(app.screens[2].layout)
+		on_release: app.go_screen(app.tabLibraryIdx), app.load_tabs(app.screens[2].layout)
 
 	Button:
 		size_hint_y: None
 		height: '48dp'
 		text: 'Add a Personal Tab'
-		on_release: app.go_screen(3), root.show_load()
+		on_release: app.go_screen(app.addTabIdx), root.show_load()
 
 	Button:
 		size_hint_y: None
 		height: '48dp'
-		text: 'Simon Says Challenge'
-		on_release: app.go_screen(4)
+		text: 'Chord Practice'
+		on_release: app.go_screen(app.challengeIdx)
 		
 	Button:
 		size_hint_y: None
 		height: '48dp'
 		text: 'Tuner'
-		on_release: app.go_screen(5), app.do_tuning(), app.start_tuner()
+		on_release: app.go_screen(app.tunerIdx), app.do_tuning(), app.start_tuner()
