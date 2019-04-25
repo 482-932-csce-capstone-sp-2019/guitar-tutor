@@ -165,16 +165,25 @@ def lightGuitar(song, tab_name):
     except KeyboardInterrupt:
         a1.port.close()
         cl()
+    #Score is total notes divided by number of notes played
     curScore = a1.correctNotes/(a1.correctNotes + a1.incorrectNotes)
     print("Score: " + str(curScore))
+    #Get score file for current song or create it
     fileName = os.path.abspath(os.path.join('.', 'Scores/', (tab_name + '.txt')))
     scores = []
     # open file and read the content in a list
+    #read in current scores
     with open(fileName, 'r+') as filehandle:  
         scores = [float(score.rstrip()) for score in filehandle.readlines()]
     scores.append(curScore)
     scores = sorted(scores)
+    
+    i = 0
     with open(fileName, 'w+') as filehandle:  
         filehandle.writelines("%s\n" % score for score in scores)
+        if i == 10:
+           # break
+           exit()
+        i += 1
 # onOffFunction('{0:05b}'.format(1), '{0:03b}'.format(3))
 time.sleep(2) #waiting the initialization...

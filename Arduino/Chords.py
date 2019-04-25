@@ -49,17 +49,11 @@ def chords(chord):
     elif chord == "bm":
         bm()
     elif chord == "c":
-        c
-c7
-cmaj7()
+        c()
     elif chord == "c7":
-        c
-c7
-cmaj7()
+        c7()
     elif chord == "cmaj7":
-        c
-c7
-cmaj7()
+        cmaj7()
     elif chord == "d":
         d() 
     elif chord == "dm":
