@@ -77,24 +77,6 @@ t = threading.Thread()
 def getRandomChord():
 	possibleChords = ["a","a7","am","am7","amaj7","bf","b7","bm","c","c7","cmaj7","d","dm","d7","dm7","dmaj7","e","e7","em","em7","f","fmaj7","g","g7"]
 	return random.choice(possibleChords)
-
-# This is the widget for the simon says game
-class SimonSaysWidget(Widget):
-	chordList = ListProperty([])
-	nextChord = StringProperty()
-
-	def __init__(self, **kwargs):
-		super(SimonSaysWidget, self).__init__(**kwargs)
-		self.addChord()
-
-	def displayChord(self, chord):
-		cl()
-		chords(chord)
-	
-	def addChord(self):
-		newChord = getRandomChord()
-		chordList.append(newChord)
-		nextChord = newChord
 		
 class OneMoreNoteWidget(Widget):
 	oneMoreNoteClock = 0
@@ -189,9 +171,8 @@ class GuitarApp(App):
 		self.challengeIdx = 4
 		self.tunerIdx = 5
 		self.playingTabIdx = 6
-		self.simonSaysIdx = 7
-		self.oneMoreNoteIdx = 8
-		self.scoreboardIdx = 9
+		self.oneMoreNoteIdx = 7
+		self.scoreboardIdx = 8
 		# Remember names of screens, used for loading files
 		self.screen_names = self.available_screens
 		# Get current directory
@@ -396,12 +377,12 @@ def stopPlayingTabCheck(dt):
 		startedATab = False
 		app.toggle_source_code()
 		app.go_screen(app.scoreboardIdx)
-		app.screens[9].ids.LastScore.text = app.getLastScore()
-		app.screens[9].ids.Score1.text = '1. ' + app.get5Scores()[0]
-		app.screens[9].ids.Score2.text = '2. ' + app.get5Scores()[1]
-		app.screens[9].ids.Score3.text = '3. ' + app.get5Scores()[2]
-		app.screens[9].ids.Score4.text = '4. ' + app.get5Scores()[3]
-		app.screens[9].ids.Score5.text = '5. ' + app.get5Scores()[4]
+		app.screens[app.scoreboardIdx].ids.LastScore.text = app.getLastScore()
+		app.screens[app.scoreboardIdx].ids.Score1.text = '1. ' + app.get5Scores()[0]
+		app.screens[app.scoreboardIdx].ids.Score2.text = '2. ' + app.get5Scores()[1]
+		app.screens[app.scoreboardIdx].ids.Score3.text = '3. ' + app.get5Scores()[2]
+		app.screens[app.scoreboardIdx].ids.Score4.text = '4. ' + app.get5Scores()[3]
+		app.screens[app.scoreboardIdx].ids.Score5.text = '5. ' + app.get5Scores()[4]
 
 Clock.schedule_interval(stopPlayingTabCheck, .1)
 
