@@ -75,7 +75,7 @@ t = threading.Thread()
 # gets a random chord name from a list of all implemented chords
 # used for simon says game
 def getRandomChord():
-	possibleChords = ["a","a7","am","am7","amaj7","bf","b7","bm","c","c7","cmaj7","d","dm","d7","dm7","dmaj7","e","e7","em","em7","f","fmaj7","g","g7"]
+	possibleChords = [ac,a7c,,amc,am7c,amaj7c,bfc,b7c,bmc,cc,c7c,cmaj7c,dc,d7c,dmc,dm7c,dmaj7c,ec,e7c,emc,em7c,fc,fmaj7c,gc,g7c]
 	return random.choice(possibleChords)
 		
 class OneMoreNoteWidget(Widget):
@@ -388,7 +388,7 @@ Clock.schedule_interval(stopPlayingTabCheck, .1)
 
 class GuitarScreen(Screen):
 	fullscreen = BooleanProperty(False)
-	print(ac)
+	print(getRandomChord())
 
 	# This function adds the widget to the window, we need this to display the pages
 	def add_widget(self, *args):
