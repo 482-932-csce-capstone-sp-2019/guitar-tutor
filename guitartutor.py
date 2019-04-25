@@ -222,9 +222,7 @@ class GuitarApp(App):
 		
 			self.update_sourcecode(args[0])
 		else:
-			height = 0
-			
-			Animation(height=height, d=.3, t='out_quart').start(
+			Animation(height=0, d=.3, t='out_quart').start(
 				self.root.ids.sv)
 				
 	def quit_source_code(self, *args):
@@ -242,7 +240,6 @@ class GuitarApp(App):
 	def update_sourcecode(self, *args):
 		self.root.ids.sourcecode.text = self.read_sourcecode(args[0])
 		self.root.ids.sv.scroll_y = 1
-		self.root.ids.sv.scroll_x = 1
 	
 	def go_screen(self, idx):
 		#cl()
