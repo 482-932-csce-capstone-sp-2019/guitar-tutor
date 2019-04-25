@@ -97,6 +97,14 @@ def getSongPosition():
     global fret
     return (measure, note, fret)
 
+
+def scorePush(filepath, scores):
+    i = 0
+    with open(filepath, 'w+') as filehandle:  
+        filehandle.writelines("%s\n" % score for score in scores)
+        if i == 10:
+            return
+        i += 1
 # Loops through the data structure and lights the appropriate lights.
 # this is meant to be run as a thread alongside the actual application
 def lightGuitar(song, tab_name):
@@ -178,12 +186,6 @@ def lightGuitar(song, tab_name):
     scores.append(curScore)
     scores = sorted(scores)
     
-    i = 0
-    with open(fileName, 'w+') as filehandle:  
-        filehandle.writelines("%s\n" % score for score in scores)
-        if i == 10:
-           # break
-           exit()
-        i += 1
+    scorePush(fileName, scores)
 # onOffFunction('{0:05b}'.format(1), '{0:03b}'.format(3))
 time.sleep(2) #waiting the initialization...
