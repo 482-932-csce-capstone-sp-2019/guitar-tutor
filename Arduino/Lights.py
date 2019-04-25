@@ -177,25 +177,25 @@ def lightGuitar(song, tab_name):
     with open(fileName, 'w+') as filehandle:  
         filehandle.writelines("%s\n" % score for score in scores)
 
-simonSaysScore = 0
+practiceScore = 0
 
-def getSimonSaysScore():
-    global simonSaysScore
-    return simonSaysScore
+def getPracticeScore():
+    global practiceScore
+    return practiceScore
 
-def resetSimonSaysScore():
-    global simonSaysScore
-    simonSaysScore = 0
+def resetPracticeScore():
+    global practiceScore
+    practiceScore = 0
 
-def addToSimonSaysScore(score):
-    global simonSaysScore
-    simonSaysScore += score
+def addToPracticeScore(score):
+    global practiceScore
+    practiceScore += score
 
 
 # Loops through the data structure and lights the appropriate lights.
 # this is meant to be run as a thread alongside the actual application
-# This function is identical to LightGuitar but is only meant to 
-def lightGuitarSimonSays(song, tab_name):
+# This function is identical to LightGuitar but is only meant to be used for the fingering practice game
+def lightGuitarPractice(song, tab_name):
     a1.correctNotes = 0
     a1.totalNotes = 0 
     a1.incorrectNotes = 0
@@ -262,7 +262,7 @@ def lightGuitarSimonSays(song, tab_name):
         a1.port.close()
         cl()
     curScore = a1.correctNotes/(a1.correctNotes + a1.incorrectNotes)
-    addToSimonSaysScore(curScore)
+    addToPracticeScore(curScore)
     # print("Score: " + str(curScore))
     # fileName = os.path.abspath(os.path.join('.', 'Scores/', (tab_name + '.txt')))
     # scores = []
