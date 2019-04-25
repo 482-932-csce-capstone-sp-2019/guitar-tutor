@@ -135,17 +135,6 @@ class OnScreenTab(Widget):
 		global song
 		(measure, note, fret) = getSongPosition()
 
-		#print('measure ' + str(measure))
-		#print('note ' + str(note))
-		#print('fret ' + str(fret))
-
-		# self.stringEHigh = getFretPressed(song["e"][measure][note])
-		# self.stringB = getFretPressed(song["B"][measure][note])
-		# self.stringG = getFretPressed(song["G"][measure][note])
-		# self.stringD = getFretPressed(song["D"][measure][note])
-		# self.stringA = getFretPressed(song["A"][measure][note])
-		# self.stringE = getFretPressed(song["E"][measure][note])
-
 
 class LoadDialog(FloatLayout):
     load = ObjectProperty(None)
@@ -157,6 +146,7 @@ class GuitarApp(App):
 	text_input = ObjectProperty(None)
 	sourcecode = StringProperty()
 	show_sourcecode = BooleanProperty(False)
+	currentlyPlayingTab = StringProperty()
 	
 	# Use index to cycle through screens
 	index = NumericProperty(-1)
@@ -191,7 +181,7 @@ class GuitarApp(App):
 		# Add screens to the list
 		self.available_screens = ["HomeScreen", "ChordLibrary",
 			"TabLibrary", "AddTab", "Challenge", "Tuner", "PlayingTab", 
-			"SimonSays", "OneMoreNote"]
+			"SimonSays", "OneMoreNote", "Scoreboard"]
 		self.homeScreenIdx = 0
 		self.chordLibraryIdx = 1
 		self.tabLibraryIdx = 2
@@ -201,6 +191,7 @@ class GuitarApp(App):
 		self.playingTabIdx = 6
 		self.simonSaysIdx = 7
 		self.oneMoreNoteIdx = 8
+		self.scoreboardIdx = 9
 		# Remember names of screens, used for loading files
 		self.screen_names = self.available_screens
 		# Get current directory
@@ -374,19 +365,49 @@ class GuitarApp(App):
 			app.toggle_source_code()
 			app.go_screen(self.oneMoreNoteIdx)
 
+	def get5Scores(self):
+		file = open("Scores/" + self.currentlyPlayingTab + ".txt")
+		scores = []
+		for line in file:
+			scores.append(line[:-1])
+		scores.sort(reverse=True)
+		if len(scores) < 5:
+			for i in range(5 - len(scores)):
+				scores.append('')
+		return scores[:5]
+
+	def getLastScore(self):
+		file = open("Scores/" + self.currentlyPlayingTab + ".txt")
+		scores = []
+		for line in file:
+			scores.append(line[:-1])
+		if len(scores) < 1:
+			return ''
+		return scores[-1]
+
 app = GuitarApp()
+
+startedATab = False
 
 def stopPlayingTabCheck(dt):
 	global onScreenTabClock
-	if app.index == 6 and not t.isAlive():
-		onScreenTabClock.cancel()
+	global startedATab
+	if startedATab and not t.isAlive():
+		startedATab = False
 		app.toggle_source_code()
-		app.go_screen(app.tabLibraryIdx)
+		app.go_screen(app.scoreboardIdx)
+		app.screens[9].ids.LastScore.text = app.getLastScore()
+		app.screens[9].ids.Score1.text = '1. ' + app.get5Scores()[0]
+		app.screens[9].ids.Score2.text = '2. ' + app.get5Scores()[1]
+		app.screens[9].ids.Score3.text = '3. ' + app.get5Scores()[2]
+		app.screens[9].ids.Score4.text = '4. ' + app.get5Scores()[3]
+		app.screens[9].ids.Score5.text = '5. ' + app.get5Scores()[4]
 
 Clock.schedule_interval(stopPlayingTabCheck, .1)
 
 class GuitarScreen(Screen):
 	fullscreen = BooleanProperty(False)
+	print(ac)
 
 	# This function adds the widget to the window, we need this to display the pages
 	def add_widget(self, *args):
@@ -425,7 +446,7 @@ class GuitarScreen(Screen):
 # The text member has just the file name without the .txt
 def play_tab(tab, *args):
 	global song
-	
+	global startedATab
 	fn = tab.text + '.txt'
 	song = parser(fn)
 	setDoneWithTab(False)
@@ -433,6 +454,8 @@ def play_tab(tab, *args):
 	t = threading.Thread(target=lightGuitar, args=(song, tab.text))
 	t.daemon = True
 	t.start()
+	startedATab = True
+	app.currentlyPlayingTab = tab.text
 	#app.go_screen(app.playingTabIdx)
 	pass
 
@@ -551,9 +574,9 @@ def tune():
 	stream.close()
 
 if __name__ == '__main__':
-	try:
-		app.run()
-	except Exception as e:
-		print(e)
-		cl()
+	# try:
+	app.run()
+	# except Exception as e:
+		# print(e)
+		# cl()
 	cl()
