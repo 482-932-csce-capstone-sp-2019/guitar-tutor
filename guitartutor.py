@@ -65,6 +65,7 @@ sys.path.append(d)
 
 from Lights import *
 from Parser import *
+from chordParser import * 
 from Chords import *
 from SoundDriver import setDoneWithTab
 
@@ -146,7 +147,8 @@ class GuitarApp(App):
 	# demo simon says
 	# still need to make it listen
 
-	def playSimonSays(self):
+
+	def challenge(self):
 		chordsSoFar = []
 
 		while (True):
@@ -163,7 +165,7 @@ class GuitarApp(App):
 		# Add screens to the list
 		self.available_screens = ["HomeScreen", "ChordLibrary",
 			"TabLibrary", "AddTab", "Challenge", "Tuner", "PlayingTab", 
-			"SimonSays", "OneMoreNote", "Scoreboard"]
+			"OneMoreNote", "Scoreboard"]
 		self.homeScreenIdx = 0
 		self.chordLibraryIdx = 1
 		self.tabLibraryIdx = 2
@@ -343,7 +345,16 @@ class GuitarApp(App):
 		if (not getDoneWithTab()):
 			setDoneWithTab(True)
 			cl()
-			app.toggle_source_code()
+			#app.toggle_source_code()
+			app.go_screen(self.oneMoreNoteIdx)
+
+	def stopChord(self):
+		if (not getDoneWithTab()):
+			global startedATab
+			startedATab = False
+			setDoneWithTab(True)
+			cl()
+			#app.toggle_source_code()
 			app.go_screen(self.oneMoreNoteIdx)
 
 	def get5Scores(self):
@@ -365,6 +376,19 @@ class GuitarApp(App):
 		if len(scores) < 1:
 			return ''
 		return scores[-1]
+	def play_tab_chord_practice(self):
+		global song
+		global startedATab
+		tab = getRandomChord()
+		song = chordParser(tab)
+		setDoneWithTab(False)
+		global t
+		t = threading.Thread(target=lightGuitarPractice, args=(song, ''))
+		t.daemon = True
+		t.start()
+		startedATab = True
+		#app.currentlyPlayingTab = ''
+		#app.go_screen(app.playingTabIdx)
 
 app = GuitarApp()
 
@@ -373,9 +397,9 @@ startedATab = False
 def stopPlayingTabCheck(dt):
 	global onScreenTabClock
 	global startedATab
-	if startedATab and not t.isAlive():
+	if startedATab and not t.isAlive() and app.index == app.tabLibraryIdx:
 		startedATab = False
-		app.toggle_source_code()
+		app.quit_source_code()
 		app.go_screen(app.scoreboardIdx)
 		app.screens[app.scoreboardIdx].ids.LastScore.text = app.getLastScore()
 		app.screens[app.scoreboardIdx].ids.Score1.text = '1. ' + app.get5Scores()[0]
@@ -430,6 +454,7 @@ def play_tab(tab, *args):
 	global startedATab
 	fn = tab.text + '.txt'
 	song = parser(fn)
+	print(len(song))
 	setDoneWithTab(False)
 	global t
 	t = threading.Thread(target=lightGuitar, args=(song, tab.text))
@@ -438,7 +463,21 @@ def play_tab(tab, *args):
 	startedATab = True
 	app.currentlyPlayingTab = tab.text
 	#app.go_screen(app.playingTabIdx)
-	pass
+
+
+
+practiceChordClock = 0
+
+def updateChordPractice(dt):
+	global practiceChordClock
+	global startedATab
+	if startedATab and not t.isAlive() and app.index == app.challengeIdx:
+		startedATab = False
+		#update text on screen
+		#update score
+		app.play_tab_chord_practice()
+
+Clock.schedule_interval(updateChordPractice, .1)
 
 	
 ########################TUNER######################################	
