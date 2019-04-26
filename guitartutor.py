@@ -345,6 +345,8 @@ class GuitarApp(App):
 		if (not getDoneWithTab()):
 			setDoneWithTab(True)
 			cl()
+			global startedATab
+			startedATab = False
 			#app.toggle_source_code()
 			app.go_screen(self.oneMoreNoteIdx)
 
