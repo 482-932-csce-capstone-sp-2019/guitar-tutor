@@ -41,7 +41,7 @@ def parser(file):
     file = lib_path = os.path.abspath(os.path.join('.', 'data/Tabs', file))
     inpt = open(file,"r")
     l = list(inpt.read())
-    print(l)
+    # print(l)
     r = range(len(l))
     rIter = iter(r)
     for i in rIter:

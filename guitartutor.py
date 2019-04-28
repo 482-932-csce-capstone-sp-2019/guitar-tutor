@@ -434,7 +434,7 @@ Clock.schedule_interval(stopPlayingTabCheck, .1)
 
 class GuitarScreen(Screen):
 	fullscreen = BooleanProperty(False)
-	print(getRandomChord())
+	# print(getRandomChord())
 
 	# This function adds the widget to the window, we need this to display the pages
 	def add_widget(self, *args):
@@ -481,7 +481,7 @@ def play_tab(tab, *args):
 	global startedATab
 	fn = tab.text + '.txt'
 	song = parser(fn)
-	print(len(song))
+	# print(len(song))
 	setDoneWithTab(False)
 	global t
 	t = threading.Thread(target=lightGuitar, args=(song, tab.text))

@@ -19,6 +19,7 @@ noArduinoMode = False
 
 pressed = False
 
+global lastScore
 lastScore = ''
 
 def getTheLastScore():
@@ -58,7 +59,7 @@ def onOffFunction(fret, string):
 
 def clearLights(note = []):
     out = None
-    print("Note length is:", len(note))
+    # print("Note length is:", len(note))
     if getDoneWithTab():
         pressed = True
     else:
@@ -124,9 +125,11 @@ def lightGuitar(song, tab_name):
     global note
     global measure
     global fret
+    global lastScore
 
     # if the arduino is not connected, just exit
     if (noArduinoMode):
+        lastScore = '1'
         time.sleep(2)
         exit()
     try:
@@ -225,9 +228,11 @@ def lightGuitarPractice(song, tab_name):
     global note
     global measure
     global fret
+    global lastScore
 
     # if the arduino is not connected, just exit
     if (noArduinoMode):
+        lastScore = '1'
         time.sleep(2)
         exit()
     try:
@@ -284,8 +289,7 @@ def lightGuitarPractice(song, tab_name):
         cl()
     curScore = a1.correctNotes/(a1.correctNotes + a1.incorrectNotes)
     addToPracticeScore(curScore)
-    global last_score
-    last_score = str(curScore)
+    lastScore = str(curScore)
     # print("Score: " + str(curScore))
     # fileName = os.path.abspath(os.path.join('.', 'Scores/', (tab_name + '.txt')))
     # scores = []
