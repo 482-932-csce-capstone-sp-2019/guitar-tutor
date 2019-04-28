@@ -7,7 +7,7 @@ GuitarScreen:
 		ActionView:
 			ActionPrevious:
 				app_icon: 'data/icons/home.png'
-				on_release: app.go_screen(app.homeScreenIdx)
+				on_release: app.go_screen(app.homeScreenIdx), app.stopChord()
 	
 	Label:
 		id: chord_name
