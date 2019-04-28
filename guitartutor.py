@@ -75,6 +75,9 @@ from cleanTab import cleanTab
 # made it a global to reflect this
 t = threading.Thread()
 
+
+
+
 # scroller for scrolling
 #scroll = ScrollView()
 # gets a random chord name from a list of all implemented chords
@@ -196,7 +199,10 @@ class GuitarApp(App):
 			self.root.ids.sv)
 		
 		self.update_sourcecode(args[0])
-				
+
+	def clear(self):
+		cl()
+
 	def quit_source_code(self, *args):
 		Animation(height=0, d=.3, t='out_quart').start(self.root.ids.sv)
 		
@@ -383,13 +389,16 @@ class GuitarApp(App):
 		return scores[:5]
 
 	def getLastScore(self):
-		file = open("Scores/" + self.currentlyPlayingTab + ".txt")
-		scores = []
-		for line in file:
-			scores.append(line[:-1])
-		if len(scores) < 1:
-			return ''
-		return scores[-1]
+		# file = open("Scores/" + self.currentlyPlayingTab + ".txt")
+		# scores = []
+		# for line in file:
+		# 	scores.append(line[:-1])
+		# if len(scores) < 1:
+		# 	return ''
+		# return scores[-1]
+		global lastScore
+		return lastScore
+
 	def play_tab_chord_practice(self):
 		global song
 		global startedATab

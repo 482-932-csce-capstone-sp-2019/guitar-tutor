@@ -19,11 +19,14 @@ noArduinoMode = False
 
 pressed = False
 
+lastScore = ''
+
+
 # attempts to find the arduino port
 # sets the application to noarduino mode if it cannot be found
 def findArduino():
     global noArduinoMode
-    possiblePorts = ['COM2', 'COM3', 'COM4', 'COM5', 'COM6']
+    possiblePorts = ['COM1', 'COM2', 'COM3', 'COM4', 'COM5', 'COM6']
     arduino = 0
     for p in possiblePorts:
         try :
@@ -176,6 +179,7 @@ def lightGuitar(song, tab_name):
         cl()
     #Score is total notes divided by number of notes played
     curScore = a1.correctNotes/(a1.correctNotes + a1.incorrectNotes)
+    lastScore = str(curScore)
     print("Score: " + str(curScore))
     #Get score file for current song or create it
     fileName = os.path.abspath(os.path.join('.', 'Scores/', (tab_name + '.txt')))
@@ -188,6 +192,7 @@ def lightGuitar(song, tab_name):
     scores = sorted(scores)
     
     scorePush(fileName, scores)
+    
 
 practiceScore = 0
 
@@ -275,6 +280,8 @@ def lightGuitarPractice(song, tab_name):
         cl()
     curScore = a1.correctNotes/(a1.correctNotes + a1.incorrectNotes)
     addToPracticeScore(curScore)
+    global last_score
+    last_score = curScore
     # print("Score: " + str(curScore))
     # fileName = os.path.abspath(os.path.join('.', 'Scores/', (tab_name + '.txt')))
     # scores = []
