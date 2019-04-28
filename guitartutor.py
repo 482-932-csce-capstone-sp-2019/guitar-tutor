@@ -348,7 +348,7 @@ class GuitarApp(App):
 			# Configure size of button
 			button.size_hint = (.2, .2)
 			# Add function to button
-			#button.bind(on_release = play_tab)
+			button.bind(on_release = play_tab)
 			button.bind(on_release = self.toggle_source_code)
 			# Add button!
 			tab_page.add_widget(button)
