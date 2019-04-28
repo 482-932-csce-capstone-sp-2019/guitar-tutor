@@ -40,8 +40,17 @@ GuitarScreen:
 		CStackLayout:
 			id: tab_page
 			orientation: "lr-tb"
-			
-	Button:
-		id: change
-		text: "change speed"
-		on_release: main.change_scroll_speed(self)
+	
+	BoxLayout:
+		orientation: "horizontal"
+		Button:
+			id: change
+			text: "Easy"
+			on_release: main.change_scroll_speed(self)
+			size_hint: .2, .2
+		
+		Button:
+			id: change
+			text: "Hard"
+			on_release: main.change_scroll_speed(self)
+			size_hint: .2, .2

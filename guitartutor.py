@@ -75,9 +75,6 @@ from cleanTab import cleanTab
 # made it a global to reflect this
 t = threading.Thread()
 
-# globals for changning scroll speed
-scroll = ScrollView()
-move = Animation()
 # gets a random chord name from a list of all implemented chords
 # used for simon says game
 def getRandomChord():
@@ -146,20 +143,6 @@ class GuitarApp(App):
 	def displayChord(self, chord):
 		cl()
 		chords(chord)
-
-	# demo simon says
-	# still need to make it listen
-
-
-	def challenge(self):
-		chordsSoFar = []
-
-		#while (True):
-		chordsSoFar.append(getRandomChord())
-		for c in chordsSoFar:
-			#self.displayChord(c)
-			self.screens[self.challengeIdx].ids.chord_name.text = c[1]
-			time.sleep(1)
 	
 	def build(self):
 		# Title of window
@@ -226,12 +209,9 @@ class GuitarApp(App):
 		self.root.ids.sv.scroll_y = 1
 		self.root.ids.sv.scroll_x = 0
 		
-		global scroll
-		global move
-		
 		# animate scroll
 		scroll = self.root.ids.sv
-		move = Animation(scroll_x=1, duration=5.0)
+		move = Animation(scroll_x=1, duration=100.0)
 		move.start(scroll)
 	
 	def go_screen(self, idx):
@@ -278,8 +258,12 @@ class GuitarApp(App):
 		tuner_page = self.screens[5].layout
 		tuner_page.clear_widgets()
 		
+		guide = Label()
 		label = Label()
 		title = Label()
+		
+		guide.text = "E2 A2 D3 G3 B3 E4"
+		guide.font_size = '25dp'
 		
 		cents = cents * 100
 		
@@ -298,10 +282,11 @@ class GuitarApp(App):
 			label.color = [0, 1, 0, 1]
 		
 		title.text = tuner_text
+		title.font_size = '25dp'
 		label.text = note_name
 		label.font_size = '100dp'
 		
-		
+		tuner_page.add_widget(guide)
 		tuner_page.add_widget(title)
 		tuner_page.add_widget(label)
 	
@@ -355,7 +340,7 @@ class GuitarApp(App):
 			# Configure size of button
 			button.size_hint = (.2, .2)
 			# Add function to button
-			button.bind(on_release = play_tab)
+			#button.bind(on_release = play_tab)
 			button.bind(on_release = self.toggle_source_code)
 			# Add button!
 			tab_page.add_widget(button)
@@ -410,23 +395,12 @@ class GuitarApp(App):
 		t.daemon = True
 		t.start()
 		startedATab = True
+		
+		self.screens[self.challengeIdx].ids.chord_name.text = tab[1]
 		#app.currentlyPlayingTab = ''
 		#app.go_screen(app.playingTabIdx)
 
 app = GuitarApp()
-
-# changing scrolling speed
-def change_scroll_speed(self):
-		global scroll
-		global move
-		
-		print(self.text)
-		
-		move.stop(scroll)
-		
-		move = Animation(scroll_x=1, duration=500.0)
-		
-		move.start(scroll)
 
 startedATab = False
 
