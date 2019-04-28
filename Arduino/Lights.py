@@ -21,6 +21,10 @@ pressed = False
 
 lastScore = ''
 
+def getTheLastScore():
+    global lastScore
+    return lastScore
+
 
 # attempts to find the arduino port
 # sets the application to noarduino mode if it cannot be found
@@ -281,7 +285,7 @@ def lightGuitarPractice(song, tab_name):
     curScore = a1.correctNotes/(a1.correctNotes + a1.incorrectNotes)
     addToPracticeScore(curScore)
     global last_score
-    last_score = curScore
+    last_score = str(curScore)
     # print("Score: " + str(curScore))
     # fileName = os.path.abspath(os.path.join('.', 'Scores/', (tab_name + '.txt')))
     # scores = []

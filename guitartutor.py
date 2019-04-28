@@ -396,8 +396,7 @@ class GuitarApp(App):
 		# if len(scores) < 1:
 		# 	return ''
 		# return scores[-1]
-		global lastScore
-		return lastScore
+		return getTheLastScore()
 
 	def play_tab_chord_practice(self):
 		global song
