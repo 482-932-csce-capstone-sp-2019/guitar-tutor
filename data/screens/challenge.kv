@@ -8,7 +8,11 @@ GuitarScreen:
 			ActionPrevious:
 				app_icon: 'data/icons/home.png'
 				on_release: app.go_screen(app.homeScreenIdx), app.stopChord()
+	Label:
+		size_hint_y: None
+		height: '48dp'
+		text: 'Hit the home button to stop!'
 	
 	Label:
 		id: chord_name
-		font_size: '100dp'
+		font_size: '100dp' 
