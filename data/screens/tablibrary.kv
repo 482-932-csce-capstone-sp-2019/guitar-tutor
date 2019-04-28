@@ -1,3 +1,6 @@
+#: import main guitartutor
+
+
 # We have this here to help center our buttons
 # also comes in handy for debugging
 <CStackLayout@StackLayout+TabBackgroundColor>
@@ -37,3 +40,8 @@ GuitarScreen:
 		CStackLayout:
 			id: tab_page
 			orientation: "lr-tb"
+			
+	Button:
+		id: change
+		text: "change speed"
+		on_release: main.change_scroll_speed(self)

@@ -75,8 +75,10 @@ from cleanTab import cleanTab
 # made it a global to reflect this
 t = threading.Thread()
 
-# scroller for scrolling
-#scroll = ScrollView()
+# globals for changning scroll speed
+scroll = ScrollView()
+move = Animation()
+
 # gets a random chord name from a list of all implemented chords
 # used for simon says game
 def getRandomChord():
@@ -222,9 +224,12 @@ class GuitarApp(App):
 		self.root.ids.sv.scroll_y = 1
 		self.root.ids.sv.scroll_x = 0
 		
+		global scroll
+		global move
+		
 		# animate scroll
 		scroll = self.root.ids.sv
-		move = Animation(scroll_x=1, duration=200.0)
+		move = Animation(scroll_x=1, duration=5.0)
 		move.start(scroll)
 	
 	def go_screen(self, idx):
@@ -405,6 +410,19 @@ class GuitarApp(App):
 		#app.go_screen(app.playingTabIdx)
 
 app = GuitarApp()
+
+# changing scrolling speed
+def change_scroll_speed(self):
+		global scroll
+		global move
+		
+		print(self.text)
+		
+		move.stop(scroll)
+		
+		move = Animation(scroll_x=1, duration=500.0)
+		
+		move.start(scroll)
 
 startedATab = False
 
