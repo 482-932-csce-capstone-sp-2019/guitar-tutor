@@ -47,6 +47,7 @@ from kivy.uix.widget import Widget
 from kivy.clock import Clock
 from kivy.core.window import Window
 from kivy.animation import Animation
+from kivy.uix.scrollview import ScrollView
 
 import threading
 from queue import Queue
@@ -67,11 +68,14 @@ from Lights import *
 from Parser import *
 from Chords import *
 from SoundDriver import setDoneWithTab
+from cleanTab import cleanTab
 
 # need to reference the thread for tab playing in multiple functions
 # made it a global to reflect this
 t = threading.Thread()
 
+# scroller for scrolling
+#scroll = ScrollView()
 # gets a random chord name from a list of all implemented chords
 # used for simon says game
 def getRandomChord():
@@ -126,8 +130,6 @@ class GuitarApp(App):
 	loadfile = ObjectProperty(None)
 	savefile = ObjectProperty(None)
 	text_input = ObjectProperty(None)
-	sourcecode = StringProperty()
-	show_sourcecode = BooleanProperty(False)
 	currentlyPlayingTab = StringProperty()
 	
 	# Use index to cycle through screens
@@ -149,11 +151,12 @@ class GuitarApp(App):
 	def playSimonSays(self):
 		chordsSoFar = []
 
-		while (True):
-			chordsSoFar.append(self.getRandomChord())
-			for c in chordsSoFar:
-				self.displayChord(c)
-				time.sleep(1)
+		#while (True):
+		chordsSoFar.append(getRandomChord())
+		for c in chordsSoFar:
+			#self.displayChord(c)
+			self.screens[self.challengeIdx].ids.chord_name.text = c[1]
+			time.sleep(1)
 	
 	def build(self):
 		# Title of window
@@ -163,7 +166,7 @@ class GuitarApp(App):
 		# Add screens to the list
 		self.available_screens = ["HomeScreen", "ChordLibrary",
 			"TabLibrary", "AddTab", "Challenge", "Tuner", "PlayingTab", 
-			"SimonSays", "OneMoreNote", "Scoreboard"]
+			"OneMoreNote", "Scoreboard"]
 		self.homeScreenIdx = 0
 		self.chordLibraryIdx = 1
 		self.tabLibraryIdx = 2
@@ -185,17 +188,12 @@ class GuitarApp(App):
 
 	#Testing with showing source code
 	def toggle_source_code(self,*args):
-		self.show_sourcecode = not self.show_sourcecode
-		if self.show_sourcecode:
-			height = self.root.height * .5
-			
-			Animation(height=height, d=.3, t='out_quart').start(
-				self.root.ids.sv)
+		height = self.root.height * .5
 		
-			self.update_sourcecode(args[0])
-		else:
-			Animation(height=0, d=.3, t='out_quart').start(
-				self.root.ids.sv)
+		Animation(height=height, d=.3, t='out_quart').start(
+			self.root.ids.sv)
+		
+		self.update_sourcecode(args[0])
 				
 	def quit_source_code(self, *args):
 		Animation(height=0, d=.3, t='out_quart').start(self.root.ids.sv)
@@ -207,11 +205,25 @@ class GuitarApp(App):
 		fn = join(curdir, 'data', 'tabs', '{}.txt'.format(fn))
 
 		with open(fn) as fd:
+			# get length of a single line to get horizontal scroll
+			line = fd.readline()
+			# 9.1 is a magic number used to get the right width for horizontal scrolling
+			# Max tab length is 1800
+			self.root.ids.sourcecode.width = 9.1 * len(line)
+			fd.seek(0)
+			
+			# return actual tab to display
 			return fd.read()
 	
 	def update_sourcecode(self, *args):
 		self.root.ids.sourcecode.text = self.read_sourcecode(args[0])
 		self.root.ids.sv.scroll_y = 1
+		self.root.ids.sv.scroll_x = 0
+		
+		# animate scroll
+		scroll = self.root.ids.sv
+		move = Animation(scroll_x=1, duration=200.0)
+		move.start(scroll)
 	
 	def go_screen(self, idx):
 		#cl()
@@ -334,7 +346,7 @@ class GuitarApp(App):
 			# Configure size of button
 			button.size_hint = (.2, .2)
 			# Add function to button
-			button.bind(on_release = play_tab)
+			#button.bind(on_release = play_tab)
 			button.bind(on_release = self.toggle_source_code)
 			# Add button!
 			tab_page.add_widget(button)
@@ -343,7 +355,7 @@ class GuitarApp(App):
 		if (not getDoneWithTab()):
 			setDoneWithTab(True)
 			cl()
-			app.toggle_source_code()
+			app.quit_source_code()
 			app.go_screen(self.oneMoreNoteIdx)
 
 	def get5Scores(self):
@@ -375,7 +387,7 @@ def stopPlayingTabCheck(dt):
 	global startedATab
 	if startedATab and not t.isAlive():
 		startedATab = False
-		app.toggle_source_code()
+		app.quit_source_code()
 		app.go_screen(app.scoreboardIdx)
 		app.screens[app.scoreboardIdx].ids.LastScore.text = app.getLastScore()
 		app.screens[app.scoreboardIdx].ids.Score1.text = '1. ' + app.get5Scores()[0]
@@ -405,8 +417,13 @@ class GuitarScreen(Screen):
 		self._popup.open()
 
 	def load(self, path, filename):
-		shutil.copy(os.path.join(path, filename[0]), os.path.abspath(os.path.join('.','data/tabs')))
-		content = Button(text='Success')
+		name = os.path.split(os.path.join(path, filename[0]))[-1]
+		# will not load if tab is too long!
+		# this is just so tab displays correctly
+		if(cleanTab(os.path.join(path, filename[0]), os.path.abspath(os.path.join('.','data/tabs/' + name)))):
+			content = Button(text='Success')
+		else:
+			content = Button(text='Tab too long!')
 		popup = Popup(title='Result', content=content,  size_hint=(None, None), size=(200, 200), auto_dismiss=False)		
 		content.bind(on_press=popup.dismiss)
 		popup.open()
@@ -437,8 +454,6 @@ def play_tab(tab, *args):
 	t.start()
 	startedATab = True
 	app.currentlyPlayingTab = tab.text
-	#app.go_screen(app.playingTabIdx)
-	pass
 
 	
 ########################TUNER######################################	
