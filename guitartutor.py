@@ -78,7 +78,6 @@ t = threading.Thread()
 # globals for changning scroll speed
 scroll = ScrollView()
 move = Animation()
-
 # gets a random chord name from a list of all implemented chords
 # used for simon says game
 def getRandomChord():
@@ -198,7 +197,10 @@ class GuitarApp(App):
 			self.root.ids.sv)
 		
 		self.update_sourcecode(args[0])
-				
+
+	def clear(self):
+		cl()
+
 	def quit_source_code(self, *args):
 		Animation(height=0, d=.3, t='out_quart').start(self.root.ids.sv)
 		
@@ -388,13 +390,15 @@ class GuitarApp(App):
 		return scores[:5]
 
 	def getLastScore(self):
-		file = open("Scores/" + self.currentlyPlayingTab + ".txt")
-		scores = []
-		for line in file:
-			scores.append(line[:-1])
-		if len(scores) < 1:
-			return ''
-		return scores[-1]
+		# file = open("Scores/" + self.currentlyPlayingTab + ".txt")
+		# scores = []
+		# for line in file:
+		# 	scores.append(line[:-1])
+		# if len(scores) < 1:
+		# 	return ''
+		# return scores[-1]
+		return getTheLastScore()
+
 	def play_tab_chord_practice(self):
 		global song
 		global startedATab
@@ -444,7 +448,7 @@ Clock.schedule_interval(stopPlayingTabCheck, .1)
 
 class GuitarScreen(Screen):
 	fullscreen = BooleanProperty(False)
-	print(getRandomChord())
+	# print(getRandomChord())
 
 	# This function adds the widget to the window, we need this to display the pages
 	def add_widget(self, *args):
@@ -491,7 +495,7 @@ def play_tab(tab, *args):
 	global startedATab
 	fn = tab.text + '.txt'
 	song = parser(fn)
-	print(len(song))
+	# print(len(song))
 	setDoneWithTab(False)
 	global t
 	t = threading.Thread(target=lightGuitar, args=(song, tab.text))
