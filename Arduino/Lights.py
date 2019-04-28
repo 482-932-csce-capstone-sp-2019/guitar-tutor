@@ -23,11 +23,12 @@ pressed = False
 # sets the application to noarduino mode if it cannot be found
 def findArduino():
     global noArduinoMode
-    possiblePorts = ['COM1', 'COM2', 'COM3', 'COM4', 'COM5', 'COM6']
+    possiblePorts = ['COM2', 'COM3', 'COM4', 'COM5', 'COM6']
     arduino = 0
     for p in possiblePorts:
         try :
             arduino = serial.Serial(p, 9600)
+            print(arduino)
             break
         except:
             arduino = 0
