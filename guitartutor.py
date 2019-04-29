@@ -371,13 +371,15 @@ class GuitarApp(App):
 		return scores[:5]
 
 	def getLastScore(self):
-		file = open("Scores/" + self.currentlyPlayingTab + ".txt")
-		scores = []
-		for line in file:
-			scores.append(line[:-1])
-		if len(scores) < 1:
-			return ''
-		return scores[-1]
+		# file = open("Scores/" + self.currentlyPlayingTab + ".txt")
+		# scores = []
+		# for line in file:
+		# 	scores.append(line[:-1])
+		# if len(scores) < 1:
+		# 	return ''
+		# return scores[-1]
+		global curScore
+		return curScore
 	def play_tab_chord_practice(self):
 		global song
 		global startedATab

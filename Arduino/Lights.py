@@ -18,6 +18,7 @@ noArduinoMode = False
 # When the user wants to play a tab, start a thread to do so
 
 pressed = False
+curScore = 0
 
 # attempts to find the arduino port
 # sets the application to noarduino mode if it cannot be found
@@ -188,6 +189,8 @@ def lightGuitar(song, tab_name):
     scores = sorted(scores)
     
     scorePush(fileName, scores)
+    
+    curScore = 
 
 practiceScore = 0
 
