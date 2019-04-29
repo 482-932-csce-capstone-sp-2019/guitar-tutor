@@ -216,9 +216,9 @@ class GuitarApp(App):
 		self.root.ids.sv.scroll_x = 0
 		
 		# animate scroll
-		scroll = self.root.ids.sv
-		move = Animation(scroll_x=1, duration=50.0)
-		move.start(scroll)
+		#scroll = self.root.ids.sv
+		#move = Animation(scroll_x=1, duration=50.0)
+		#move.start(scroll)
 	
 	def go_screen(self, idx):
 		#cl()
@@ -346,7 +346,7 @@ class GuitarApp(App):
 			# Configure size of button
 			button.size_hint = (.2, .2)
 			# Add function to button
-			#button.bind(on_release = play_tab)
+			button.bind(on_release = play_tab)
 			button.bind(on_release = self.toggle_source_code)
 			# Add button!
 			tab_page.add_widget(button)

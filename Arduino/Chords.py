@@ -7,30 +7,30 @@ sys.path.insert(0, 'C:/School/CSCE 482/GUITARTUTOR/Arduino')
 
 from Lights import *
 
-ac = "e|0|\nB|0|\nG|2|\nD|2|\nA|2|\nE|0|" , "A"
-a7c = "e|0|\nB|0|\nG|2|\nD|0|\nA|2|\nE|0|", "A7"
-amc = "e|0|\nB|0|\nG|2|\nD|2|\nA|1|\nE|0|", "Am"
-am7c = "e|0|\nB|0|\nG|2|\nD|0|\nA|1|\nE|0|", "Am7"
-amaj7c = "e|0|\nB|0|\nG|2|\nD|1|\nA|2|\nE|0|", "Amaj7"
-bfc = "e|0|\nB|1|\nG|3|\nD|3|\nA|3|\nE|0|", "Bb"
-b7c = "e|0|\nB|2|\nG|1|\nD|2|\nA|0|\nE|2|", "B7"
-bmc = "e|0|\nB|2|\nG|4|\nD|4|\nA|3|\nE|0|", "Bm"
-cc = "e|0|\nB|3|\nG|2|\nD|0|\nA|1|\nE|0|", "C"
-c7c = "e|0|\nB|3|\nG|2|\nD|3|\nA|1|\nE|0|", "C7"
-cmaj7c = "e|0|\nB|2|\nG|4|\nD|4|\nA|3|\nE|0|", "Cmaj7"
-dc = "e|0|\nB|0|\nG|0|\nD|2|\nA|3|\nE|2|", "D"
-d7c = "e|0|\nB|0|\nG|0|\nD|2|\nA|1|\nE|2|", "D7"
-dmc = "e|0|\nB|0|\nG|0|\nD|2|\nA|3|\nE|1|", "Dm"
-dm7c = "e|0|\nB|0|\nG|0|\nD|2|\nA|1|\nE|1|", "Dm7"
-dmaj7c = "e|0|\nB|0|\nG|0|\nD|2|\nA|2|\nE|2|", "Dmaj7"
-ec = "e|0|\nB|2|\nG|2|\nD|1|\nA|0|\nE|0|", "E"
-e7c = "e|0|\nB|2|\nG|0|\nD|1|\nA|0|\nE|0|", "E7"
-emc = "e|0|\nB|2|\nG|2|\nD|0|\nA|0|\nE|0|", "Em"
-em7c = "e|0|\nB|2|\nG|0|\nD|0|\nA|0|\nE|0|", "Em7"
-fc = "e|1|\nB|3|\nG|3|\nD|2|\nA|1|\nE|1|", "F"
-fmaj7c = "e|0|\nB|0|\nG|3|\nD|2|\nA|1|\nE|0|", "Fmaj7"
-gc = "e|3|\nB|2|\nG|0|\nD|0|\nA|0|\nE|3|", "G"
-g7c = "e|3|\nB|2|\nG|0|\nD|0|\nA|0|\nE|1|", "G7"
+ac = "e|0|\nB|2|\nG|2|\nD|2|\nA|0|\nE|0|" , "A"
+a7c = "e|0|\nB|2|\nG|0|\nD|2|\nA|0|\nE|0|", "A7"
+amc = "e|0|\nB|1|\nG|2|\nD|2|\nA|0|\nE|0|", "Am"
+am7c = "e|0|\nB|1|\nG|0|\nD|2|\nA|0|\nE|0|", "Am7"
+amaj7c = "e|0|\nB|2|\nG|1|\nD|2|\nA|0|\nE|0|", "Amaj7"
+bfc = "e|1|\nB|3|\nG|3|\nD|3|\nA|1|\nE|1|", "Bb"
+b7c = "e|2|\nB|0|\nG|2|\nD|1|\nA|2|\nE|0|", "B7"
+bmc = "e|2|\nB|3|\nG|4|\nD|4|\nA|3|\nE|3|", "Bm"
+cc = "e|0|\nB|1|\nG|0|\nD|2|\nA|3|\nE|0|", "C"
+c7c = "e|0|\nB|0|\nG|3|\nD|2|\nA|3|\nE|0|", "C7"
+cmaj7c = "e|0|\nB|0|\nG|0|\nD|2|\nA|3|\nE|0|", "Cmaj7"
+dc = "e|2|\nB|3|\nG|2|\nD|0|\nA|0|\nE|0|", "D"
+d7c = "e|2|\nB|1|\nG|2|\nD|0|\nA|0|\nE|0|", "D7"
+dmc = "e|1|\nB|2|\nG|2|\nD|0|\nA|0|\nE|0|", "Dm"
+dm7c = "e|1|\nB|1|\nG|2|\nD|0|\nA|0|\nE|0|", "Dm7"
+dmaj7c = "e|2|\nB|2|\nG|2|\nD|0|\nA|0|\nE|0|", "Dmaj7"
+ec = "e|0|\nB|0|\nG|1|\nD|2|\nA|2|\nE|0|", "E"
+e7c = "e|0|\nB|0|\nG|1|\nD|0|\nA|2|\nE|0|", "E7"
+emc = "e|0|\nB|0|\nG|0|\nD|2|\nA|2|\nE|0|", "Em"
+em7c = "e|0|\nB|0|\nG|0|\nD|0|\nA|2|\nE|0|", "Em7"
+fc = "e|1|\nB|1|\nG|2|\nD|3|\nA|3|\nE|1|", "F"
+fmaj7c = "e|0|\nB|1|\nG|2|\nD|3|\nA|0|\nE|0|", "Fmaj7"
+gc = "e|3|\nB|0|\nG|0|\nD|0|\nA|2|\nE|3|", "G"
+g7c = "e|1|\nB|0|\nG|0|\nD|0|\nA|2|\nE|3|", "G7"
 def chords(chord):
     if chord == "a":
         a()
@@ -85,10 +85,10 @@ def chords(chord):
 
 def a():
     onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(2))
-    onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(6))
     onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(3))
     onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(4))
     onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(5))
+	onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(6))
 
 def a7():
     onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(2))
@@ -123,6 +123,7 @@ def bf():
     onOffFunction('{0:05b}'.format(3), '{0:03b}'.format(3))
     onOffFunction('{0:05b}'.format(3), '{0:03b}'.format(4))
     onOffFunction('{0:05b}'.format(3), '{0:03b}'.format(5))
+	onOffFunction('{0:05b}'.format(1), '{0:03b}'.format(6))
 
 def b7():
     onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(2))
@@ -136,6 +137,7 @@ def bm():
     onOffFunction('{0:05b}'.format(4), '{0:03b}'.format(3))
     onOffFunction('{0:05b}'.format(4), '{0:03b}'.format(4))
     onOffFunction('{0:05b}'.format(3), '{0:03b}'.format(5))
+	onOffFunction('{0:05b}'.format(2), '{0:03b}'.format(6))
 
 def c():
     onOffFunction('{0:05b}'.format(3), '{0:03b}'.format(2))
