@@ -75,6 +75,11 @@ from cleanTab import cleanTab
 # made it a global to reflect this
 t = threading.Thread()
 
+playingGame = False
+
+
+# scroller for scrolling
+#scroll = ScrollView()
 # gets a random chord name from a list of all implemented chords
 # used for simon says game
 def getRandomChord():
@@ -152,7 +157,7 @@ class GuitarApp(App):
 		# Add screens to the list
 		self.available_screens = ["HomeScreen", "ChordLibrary",
 			"TabLibrary", "AddTab", "Challenge", "Tuner", "PlayingTab", 
-			"OneMoreNote", "Scoreboard"]
+			"OneMoreNote", "Scoreboard", "ScoreboardChord"]
 		self.homeScreenIdx = 0
 		self.chordLibraryIdx = 1
 		self.tabLibraryIdx = 2
@@ -162,6 +167,7 @@ class GuitarApp(App):
 		self.playingTabIdx = 6
 		self.oneMoreNoteIdx = 7
 		self.scoreboardIdx = 8
+		self.scoreboardChordIdx = 9
 		# Remember names of screens, used for loading files
 		self.screen_names = self.available_screens
 		# Get current directory
@@ -361,7 +367,9 @@ class GuitarApp(App):
 			setDoneWithTab(True)
 			cl()
 			#app.toggle_source_code()
-			app.go_screen(self.oneMoreNoteIdx)
+			app.go_screen(self.scoreboardChordIdx)
+			app.screens[app.scoreboardChordIdx].ids.LastScore.text = str(getPracticeScore())
+			resetPracticeScore()
 
 	def get5Scores(self):
 		file = open("Scores/" + self.currentlyPlayingTab + ".txt")
@@ -399,6 +407,8 @@ class GuitarApp(App):
 		self.screens[self.challengeIdx].ids.chord_name.text = tab[1]
 		#app.currentlyPlayingTab = ''
 		#app.go_screen(app.playingTabIdx)
+
+		
 
 app = GuitarApp()
 
