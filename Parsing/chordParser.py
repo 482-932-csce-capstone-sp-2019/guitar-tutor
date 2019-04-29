@@ -37,7 +37,7 @@ def chordParser(tab):
     measureCount["A"] = 1
     measureCount["E"] = 1
 
-    l = list(tab)
+    l = list(tab[0])
     print(l)
     r = range(len(l))
     rIter = iter(r)

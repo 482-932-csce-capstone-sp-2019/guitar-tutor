@@ -20,11 +20,19 @@ noArduinoMode = False
 pressed = False
 curScore = 0
 
+global lastScore
+lastScore = ''
+
+def getTheLastScore():
+    global lastScore
+    return lastScore
+
+
 # attempts to find the arduino port
 # sets the application to noarduino mode if it cannot be found
 def findArduino():
     global noArduinoMode
-    possiblePorts = ['COM2', 'COM3', 'COM4', 'COM5', 'COM6']
+    possiblePorts = ['COM1', 'COM2', 'COM3', 'COM4', 'COM5', 'COM6']
     arduino = 0
     for p in possiblePorts:
         try :
@@ -52,7 +60,7 @@ def onOffFunction(fret, string):
 
 def clearLights(note = []):
     out = None
-    print("Note length is:", len(note))
+    # print("Note length is:", len(note))
     if getDoneWithTab():
         pressed = True
     else:
@@ -118,9 +126,11 @@ def lightGuitar(song, tab_name):
     global note
     global measure
     global fret
+    global lastScore
 
     # if the arduino is not connected, just exit
     if (noArduinoMode):
+        lastScore = '1'
         time.sleep(2)
         exit()
     try:
@@ -177,6 +187,7 @@ def lightGuitar(song, tab_name):
         cl()
     #Score is total notes divided by number of notes played
     curScore = a1.correctNotes/(a1.correctNotes + a1.incorrectNotes)
+    lastScore = str(curScore)
     print("Score: " + str(curScore))
     #Get score file for current song or create it
     fileName = os.path.abspath(os.path.join('.', 'Scores/', (tab_name + '.txt')))
@@ -190,8 +201,6 @@ def lightGuitar(song, tab_name):
     
     scorePush(fileName, scores)
     
-    curScore = 
-
 practiceScore = 0
 
 def getPracticeScore():
@@ -219,9 +228,11 @@ def lightGuitarPractice(song, tab_name):
     global note
     global measure
     global fret
+    global lastScore
 
     # if the arduino is not connected, just exit
     if (noArduinoMode):
+        lastScore = '1'
         time.sleep(2)
         exit()
     try:
@@ -278,6 +289,7 @@ def lightGuitarPractice(song, tab_name):
         cl()
     curScore = a1.correctNotes/(a1.correctNotes + a1.incorrectNotes)
     addToPracticeScore(curScore)
+    lastScore = str(curScore)
     # print("Score: " + str(curScore))
     # fileName = os.path.abspath(os.path.join('.', 'Scores/', (tab_name + '.txt')))
     # scores = []
