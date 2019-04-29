@@ -129,6 +129,7 @@ class NoteRecognizer():
 					print("Notes: " + str(list((n.note for n in note))))
 
 					l1 = [n.note -1, n.note, n.note+1]
+
 					intersect = set(l1).intersection(set(cs))
 					if  len(intersect) >= 1:
 						cs = list(set(cs) - set(intersect))

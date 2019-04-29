@@ -230,7 +230,7 @@ class GuitarApp(App):
 		
 		# animate scroll
 		scroll = self.root.ids.sv
-		move = Animation(scroll_x=1, duration=5.0)
+		move = Animation(scroll_x=1, duration=150.0)
 		move.start(scroll)
 	
 	def go_screen(self, idx):
