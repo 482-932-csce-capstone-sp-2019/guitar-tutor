@@ -1,5 +1,6 @@
 from pysoundcard import Stream
 import mido
+import time
 import wave
 import numpy as np
 from aubio import pitch, onset
@@ -76,6 +77,7 @@ class NoteRecognizer():
 	
 	# while displaying the next note, wait for the new note to begin, and grade the currently held note
 	def waitForOnset(self, next = []):
+		time.sleep(.15)
 		print(len(next))
 		self.currentNote = next
 		print("cureentnote length:", len(self.currentNote))

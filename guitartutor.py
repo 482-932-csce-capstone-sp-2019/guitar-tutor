@@ -367,8 +367,8 @@ class GuitarApp(App):
 			setDoneWithTab(True)
 			cl()
 			#app.toggle_source_code()
-			app.go_screen(self.scoreboardChordIdx)
-			app.screens[app.scoreboardChordIdx].ids.LastScore.text = str(getPracticeScore())
+			#app.go_screen(app.scoreboardChordIdx)
+			#app.screens[self.scoreboardChordIdx].ids.LastScore.text = getPracticeScore()
 			resetPracticeScore()
 
 	def get5Scores(self):
