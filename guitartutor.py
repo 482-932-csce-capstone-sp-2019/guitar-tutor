@@ -85,7 +85,9 @@ playingGame = False
 def getRandomChord():
 	possibleChords = [ac,a7c,amc,am7c,amaj7c,bfc,b7c,bmc,cc,c7c,cmaj7c,dc,d7c,dmc,dm7c,dmaj7c,ec,e7c,emc,em7c,fc,fmaj7c,gc,g7c]
 	return random.choice(possibleChords)
-		
+
+# this is the widget that runs on the one more note screen
+# it just checks if the program is still listening for notes		
 class OneMoreNoteWidget(Widget):
 	oneMoreNoteClock = 0
 	def __init__(self, **kwargs):
@@ -96,45 +98,23 @@ class OneMoreNoteWidget(Widget):
 		if not t.isAlive() and app.index == app.oneMoreNoteIdx:
 			app.go_screen(app.homeScreenIdx)
 
-song = 0
-
-def getFretPressed(frets):
-	fretPressed = -1
-	try:
-		fretPressed = frets.index(True) 
-	except:
-		return '-'
-	return str(fretPressed + 1)
-
-onScreenTabClock = 0
-
-class OnScreenTab(Widget):
-	stringEHigh = StringProperty()
-	stringB = StringProperty()
-	stringG = StringProperty()
-	stringD = StringProperty()
-	stringA = StringProperty()
-	stringE = StringProperty()
-
-	def __init__(self, **kwargs):
-		global onScreenTabClock
-		super(OnScreenTab, self).__init__(**kwargs)
-		onScreenTabClock = Clock.schedule_interval(self.update, 1/60.)
-	
-	def update(self, *args):
-		global song
-		(measure, note, fret) = getSongPosition()
-
-
 class LoadDialog(FloatLayout):
     load = ObjectProperty(None)
     cancel = ObjectProperty(None)
+
+# lock used to protect the challenge going variable in the app
+challengeGoingLock = threading.Lock()
 
 class GuitarApp(App):
 	loadfile = ObjectProperty(None)
 	savefile = ObjectProperty(None)
 	text_input = ObjectProperty(None)
+
+	# the string name of the app the system is currently playing
 	currentlyPlayingTab = StringProperty()
+
+	# a boolean that displays whether or not the user is still playing the chord practice game
+	challengeGoing = BooleanProperty(False)
 	
 	# Use index to cycle through screens
 	index = NumericProperty(-1)
@@ -221,8 +201,8 @@ class GuitarApp(App):
 		#move.start(scroll)
 	
 	def go_screen(self, idx):
-		#cl()
-		if(t.isAlive() and self.index != self.oneMoreNoteIdx and self.index != self.tabLibraryIdx):
+		cl()
+		if(t.isAlive() and self.index != self.oneMoreNoteIdx and self.index != self.tabLibraryIdx and self.index != self.challengeIdx):
 			self.index = self.oneMoreNoteIdx
 			self.root.ids.sm.switch_to(self.load_screen(self.oneMoreNoteIdx), direction="left")
 			return
@@ -231,6 +211,10 @@ class GuitarApp(App):
 		if(self.index != idx):
 			self.index = idx
 			self.root.ids.sm.switch_to(self.load_screen(idx), direction="left")
+		# if(t.isAlive() and self.index == self.oneMoreNoteIdx):
+		# 	return
+		# self.index = idx
+		# self.root.ids.sm.switch_to(self.load_screen(idx), direction="left")
 
 	# returns a screen
 	# might be modified to search for next screen... maybe
@@ -351,6 +335,7 @@ class GuitarApp(App):
 			# Add button!
 			tab_page.add_widget(button)
 	
+	# called when the user wants to stop playing the tab midway through
 	def stopTab(self):
 		if (not getDoneWithTab()):
 			setDoneWithTab(True)
@@ -360,17 +345,20 @@ class GuitarApp(App):
 			#app.toggle_source_code()
 			app.go_screen(self.oneMoreNoteIdx)
 
+	# this function stops the chord practice game
+	# it takes care of all the cleanup for the game
 	def stopChord(self):
-		if (not getDoneWithTab()):
-			global startedATab
-			startedATab = False
-			setDoneWithTab(True)
-			cl()
-			#app.toggle_source_code()
-			#app.go_screen(app.scoreboardChordIdx)
-			#app.screens[self.scoreboardChordIdx].ids.LastScore.text = getPracticeScore()
-			resetPracticeScore()
+		global startedATab
+		global challengeGoingLock
+		self.setPlayingChallenge(False)
+		startedATab = False
+		setDoneWithTab(True)
+		cl()
+		self.go_screen(self.scoreboardChordIdx)
+		app.screens[self.scoreboardChordIdx].ids.LastScore.text = getPracticeScore()
+		resetPracticeScore()
 
+	# returns the top 5 scores on the current song
 	def get5Scores(self):
 		file = open("Scores/" + self.currentlyPlayingTab + ".txt")
 		scores = []
@@ -382,16 +370,14 @@ class GuitarApp(App):
 				scores.append('')
 		return scores[:5]
 
+	# returns the latest score returned by the system
 	def getLastScore(self):
-		# file = open("Scores/" + self.currentlyPlayingTab + ".txt")
-		# scores = []
-		# for line in file:
-		# 	scores.append(line[:-1])
-		# if len(scores) < 1:
-		# 	return ''
-		# return scores[-1]
 		return getTheLastScore()
 
+	# this function is slightly different from the original play tab which is meant to play an entire tab
+	# the chord game only plays one chord at a time
+	# each chord is represented as a tab
+	# this function is called every time the user hits another chord
 	def play_tab_chord_practice(self):
 		global song
 		global startedATab
@@ -405,15 +391,29 @@ class GuitarApp(App):
 		startedATab = True
 		
 		self.screens[self.challengeIdx].ids.chord_name.text = tab[1]
-		#app.currentlyPlayingTab = ''
-		#app.go_screen(app.playingTabIdx)
+
+	# When playing the chord game, the user and the program can both access this variable
+	# Lock implemented to ensure neither overwrites the other's changes
+	def setPlayingChallenge(self, val):
+		global challengeGoingLock
+		challengeGoingLock.acquire(True)
+		self.challengeGoing = val
+		challengeGoingLock.release()
+
+	def getPlayingChallenge(self):
+		challengeGoingLock.acquire(True)
+		return self.challengeGoing
+
 
 		
 
 app = GuitarApp()
 
+# global that is set when a tab starts
 startedATab = False
 
+# this clock repeatedly checks whether the user has completed a song
+# once the user completes a song, it just moves to the scoreboard index
 def stopPlayingTabCheck(dt):
 	global onScreenTabClock
 	global startedATab
@@ -432,7 +432,6 @@ Clock.schedule_interval(stopPlayingTabCheck, .1)
 
 class GuitarScreen(Screen):
 	fullscreen = BooleanProperty(False)
-	# print(getRandomChord())
 
 	# This function adds the widget to the window, we need this to display the pages
 	def add_widget(self, *args):
@@ -460,13 +459,6 @@ class GuitarScreen(Screen):
 		content.bind(on_press=popup.dismiss)
 		popup.open()
 		self.dismiss_popup()
-	
-	def update(self):
-		global t
-		print('pp')
-		if app.current_title() == 'PlayingTab':
-			if not t.isAlive():
-				app.go_screen(app.addTabIdx)
 
 # This is the function that listens to the dynamic buttons
 # When a button is pressed this function is called with the 
@@ -479,7 +471,6 @@ def play_tab(tab, *args):
 	global startedATab
 	fn = tab.text + '.txt'
 	song = parser(fn)
-	# print(len(song))
 	setDoneWithTab(False)
 	global t
 	t = threading.Thread(target=lightGuitar, args=(song, tab.text))
@@ -489,14 +480,17 @@ def play_tab(tab, *args):
 	app.currentlyPlayingTab = tab.text
 	#app.go_screen(app.playingTabIdx)
 
-
-
 practiceChordClock = 0
 
+# this is a clock that runs every tenth of a second once the chord practice game is selected
+# this function checks if it is time to move onto the net chord in the challenge
 def updateChordPractice(dt):
 	global practiceChordClock
 	global startedATab
-	if startedATab and not t.isAlive() and app.index == app.challengeIdx:
+	global challengeGoingLock
+	stillGoing = app.getPlayingChallenge()
+	challengeGoingLock.release()
+	if stillGoing and startedATab and not t.isAlive() and app.index == app.challengeIdx:
 		startedATab = False
 		#update text on screen
 		#update score
@@ -619,9 +613,5 @@ def tune():
 	stream.close()
 
 if __name__ == '__main__':
-	# try:
 	app.run()
-	# except Exception as e:
-		# print(e)
-		# cl()
 	cl()
