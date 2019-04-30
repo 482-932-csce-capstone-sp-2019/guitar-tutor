@@ -1,0 +1,35 @@
+GuitarScreen:
+    # Name of the screen
+	name: "ScoreboardChord"
+	
+	# fullscreen helps with getting the contents formatted correctly
+	fullscreen: True
+	
+	ActionBar:
+		background_color: 0, 0, 0 ,0
+		ActionView:
+			ActionPrevious:
+				app_icon: 'data/icons/home.png'
+				on_release: app.go_screen(app.oneMoreNoteIdx)
+	Label:
+		size_hint_y: None
+		height: '48dp'
+		text: 'Well done!'
+
+	Label:
+		size_hint_y: None
+		height: '48dp'
+		text: 'Here\'s your latest score!'
+
+	Label:
+		id: LastScore
+		size_hint_y: None
+		height: '48dp'
+		text: app.getLastScore()
+
+	Label:
+		size_hint_y: None
+		height: '48dp'
+		text: 'Great job!'
+
+	

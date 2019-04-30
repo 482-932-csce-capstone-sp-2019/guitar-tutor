@@ -75,7 +75,7 @@ from cleanTab import cleanTab
 # made it a global to reflect this
 t = threading.Thread()
 
-
+playingGame = False
 
 
 # scroller for scrolling
@@ -148,20 +148,6 @@ class GuitarApp(App):
 	def displayChord(self, chord):
 		cl()
 		chords(chord)
-
-	# demo simon says
-	# still need to make it listen
-
-
-	def challenge(self):
-		chordsSoFar = []
-
-		#while (True):
-		chordsSoFar.append(getRandomChord())
-		for c in chordsSoFar:
-			#self.displayChord(c)
-			self.screens[self.challengeIdx].ids.chord_name.text = c[1]
-			time.sleep(1)
 	
 	def build(self):
 		# Title of window
@@ -171,7 +157,7 @@ class GuitarApp(App):
 		# Add screens to the list
 		self.available_screens = ["HomeScreen", "ChordLibrary",
 			"TabLibrary", "AddTab", "Challenge", "Tuner", "PlayingTab", 
-			"OneMoreNote", "Scoreboard"]
+			"OneMoreNote", "Scoreboard", "ScoreboardChord"]
 		self.homeScreenIdx = 0
 		self.chordLibraryIdx = 1
 		self.tabLibraryIdx = 2
@@ -181,6 +167,7 @@ class GuitarApp(App):
 		self.playingTabIdx = 6
 		self.oneMoreNoteIdx = 7
 		self.scoreboardIdx = 8
+		self.scoreboardChordIdx = 9
 		# Remember names of screens, used for loading files
 		self.screen_names = self.available_screens
 		# Get current directory
@@ -229,9 +216,9 @@ class GuitarApp(App):
 		self.root.ids.sv.scroll_x = 0
 		
 		# animate scroll
-		scroll = self.root.ids.sv
-		move = Animation(scroll_x=1, duration=150.0)
-		move.start(scroll)
+		#scroll = self.root.ids.sv
+		#move = Animation(scroll_x=1, duration=50.0)
+		#move.start(scroll)
 	
 	def go_screen(self, idx):
 		#cl()
@@ -277,8 +264,12 @@ class GuitarApp(App):
 		tuner_page = self.screens[5].layout
 		tuner_page.clear_widgets()
 		
+		guide = Label()
 		label = Label()
 		title = Label()
+		
+		guide.text = "E2 A2 D3 G3 B3 E4"
+		guide.font_size = '25dp'
 		
 		cents = cents * 100
 		
@@ -297,10 +288,11 @@ class GuitarApp(App):
 			label.color = [0, 1, 0, 1]
 		
 		title.text = tuner_text
+		title.font_size = '25dp'
 		label.text = note_name
 		label.font_size = '100dp'
 		
-		
+		tuner_page.add_widget(guide)
 		tuner_page.add_widget(title)
 		tuner_page.add_widget(label)
 	
@@ -375,7 +367,9 @@ class GuitarApp(App):
 			setDoneWithTab(True)
 			cl()
 			#app.toggle_source_code()
-			app.go_screen(self.oneMoreNoteIdx)
+			#app.go_screen(app.scoreboardChordIdx)
+			#app.screens[self.scoreboardChordIdx].ids.LastScore.text = getPracticeScore()
+			resetPracticeScore()
 
 	def get5Scores(self):
 		file = open("Scores/" + self.currentlyPlayingTab + ".txt")
@@ -409,8 +403,12 @@ class GuitarApp(App):
 		t.daemon = True
 		t.start()
 		startedATab = True
+		
+		self.screens[self.challengeIdx].ids.chord_name.text = tab[1]
 		#app.currentlyPlayingTab = ''
 		#app.go_screen(app.playingTabIdx)
+
+		
 
 app = GuitarApp()
 

@@ -18,6 +18,7 @@ noArduinoMode = False
 # When the user wants to play a tab, start a thread to do so
 
 pressed = False
+curScore = 0
 
 global lastScore
 lastScore = ''
@@ -31,7 +32,7 @@ def getTheLastScore():
 # sets the application to noarduino mode if it cannot be found
 def findArduino():
     global noArduinoMode
-    possiblePorts = ['COM1', 'COM2', 'COM3', 'COM4', 'COM5', 'COM6']
+    possiblePorts = ['COM2', 'COM3', 'COM4', 'COM5', 'COM6']
     arduino = 0
     for p in possiblePorts:
         try :
@@ -199,13 +200,14 @@ def lightGuitar(song, tab_name):
     scores = sorted(scores)
     
     scorePush(fileName, scores)
-    
 
+    
+global practiceScore
 practiceScore = 0
 
 def getPracticeScore():
     global practiceScore
-    return practiceScore
+    return str(practiceScore)
 
 def resetPracticeScore():
     global practiceScore
