@@ -1,5 +1,5 @@
 # guitartutor
-Made in Python 3.6 using the following Open Source Python libraries:
+Made in Python 3.7 using the following Open Source Python libraries:
 
 **aubio**
 
@@ -15,10 +15,22 @@ Made in Python 3.6 using the following Open Source Python libraries:
 
 **Pyaudio**
 
+Install the following for midi recognition
+ 
+FL STUDIO ASIO
+
+LOOPBE INTERNAL MIDI
+
+JAM ORIGIN
+ 
 Designed for use with device produced as part of this project, utilizing an Arduino. See paper for more detail on design of this project and software.
 
-In order to run this software, install all of the above libraries (ideally using a package managment sorftware like pip or conda). Plug the Arduino into COM4 on your device, and feed the audio from the guitar into your computer, setting it to the default recording device. If you wish, you can feed the guitar output through an amplifier before routing it to your machine.
+In order to run this software, install all of the above libraries (ideally using a package managment sorftware like pip or conda). 
 
-At that point, you can load your Tabs into the "Tabs" folder as ascii data (.txt should be fine). Simply choose tab and type the file name to play through the song. Alternatively, you can play a preloaded chord by choosing chord, then typing the chord name.
+Plug the Arduino into COM4 on your device, and feed the the quater inch jack to usb wire into the guitar and the machine running the software.
 
-run program: Python Main.py
+Make sure LOOPBE is not muted, jam origin is on and the following setting are set in jam origin,
+
+Driver = FL STUDIO ASIO, and INPUT = LOOPBE INTERNAL MIDI
+
+run program: Python guitartutor.py

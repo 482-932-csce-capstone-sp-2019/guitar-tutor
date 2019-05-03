@@ -38,7 +38,6 @@ def getNoteDict():
 	file.close()
 	i = 0
 	for a in notelist:
-		#print("%f Hz at index %d" % (a, i))
 		i += 1
 	return notelist
 
@@ -55,7 +54,6 @@ class NoteRecognizer():
 	lx = 0
 	def __init__(self):
 		self.notelist = getNoteDict()
-		#self.s = Stream(samplerate=RATE, blocksize=CHUNK)
 		for i in range(0,5):
 			try:
 
@@ -86,22 +84,11 @@ class NoteRecognizer():
 		print(len(next))
 		totalLength = 0
 		num_incorrect = 0
-		#correctTone = 0
-		#tp = self.notelist[self.currentNote] #target pitch		
-		# In the absence of a do while loop, read, then begin looping
-		#vec = self.s.read(CHUNK)
-		#mono_vec = vec.sum(-1) / float(self.s.channels[0])
+		
 		# While we do not have a new onset
 		# Possibly ignore onsets if they get a wrong note?
-		
 		while True:
-			# if doneWithTab == True:
-			# 	self.port.close()
-			# 	exit()
 			totalLength += 1
-			# if we have a note, attempt to see if we are matching it
-			#x = self.p(mono_vec)[0]
-			#y = self.p.get_confidence()\
 			ct = 1
 			i = 0
 			note = []
@@ -146,17 +133,10 @@ class NoteRecognizer():
 				break
 			else:
 				num_incorrect += 1
-					
-			# read again
-			#vec = self.s.read(CHUNK)
-			#mono_vec = vec.sum(-1) / float(self.s.channels[0])
 
 		# advance to the currently displayed note
 		self.totalNotes += 1
 		# as long as the note was correct for half the time we heard it, count it
-		# this can be fiddled with
-		#self.lx = self.o.get_last_s()
-		#port.panic()
 		self.port.close()
 		if totalLength != 0:
 			self.correctNotes += 1

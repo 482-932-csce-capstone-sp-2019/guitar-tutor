@@ -6,7 +6,7 @@ import sys
 
 sys.path.insert(0, 'C:/School/CSCE 482/GUITARTUTOR/Arduino')
 
-
+# hard coding of a bunch of chords used for learning
 ac = "e|0|\nB|2|\nG|2|\nD|2|\nA|0|\nE|0|", "A"
 a7c = "e|0|\nB|2|\nG|0|\nD|2|\nA|0|\nE|0|", "A7"
 amc = "e|0|\nB|1|\nG|2|\nD|2|\nA|0|\nE|0|", "Am"
@@ -277,5 +277,3 @@ def g7():
     onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(4))
     onOffFunction('{0:05b}'.format(0), '{0:03b}'.format(5))
     onOffFunction('{0:05b}'.format(1), '{0:03b}'.format(6))
-
-# chords()

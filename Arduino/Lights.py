@@ -60,7 +60,6 @@ def onOffFunction(fret, string):
 
 def clearLights(note = []):
     out = None
-    # print("Note length is:", len(note))
     if getDoneWithTab():
         pressed = True
     else:
@@ -74,7 +73,6 @@ def clearLights(note = []):
 
 def cl(note = -1):
     # Clears all lights
-    #a.waitForOnset(note)
     global noArduinoMode
 
     n = int("0",2)
@@ -94,7 +92,6 @@ def ifDoneKillStream():
     if (getDoneWithTab()):
         cl()
         a1.port.close()
-        #a1.s.stop()
         exit()
 
 note = 0
@@ -134,7 +131,6 @@ def lightGuitar(song, tab_name):
         time.sleep(2)
         exit()
     try:
-        #a1.s.start()
         onLights = []
         clear = False
         for measure in range(101):
@@ -180,8 +176,6 @@ def lightGuitar(song, tab_name):
                     
                 else: 
                     note += 1
-        #print("You got %f of the notes correct." % (float(a.correctNotes)/float(a.totalNotes)))
-        #a1.s.stop()
     except KeyboardInterrupt:
         a1.port.close()
         cl()
@@ -238,7 +232,6 @@ def lightGuitarPractice(song, tab_name):
         time.sleep(2)
         exit()
     try:
-        #a1.s.start()
         onLights = []
         clear = False
         for measure in range(101):
@@ -277,30 +270,16 @@ def lightGuitarPractice(song, tab_name):
                     n = clearLights(renderedNote)
                     if (n == -1):
                         a1.port.close()
-                        #print("Die")
                         cl()
                         exit()
                     note += n
                     
                 else: 
                     note += 1
-        #print("You got %f of the notes correct." % (float(a.correctNotes)/float(a.totalNotes)))
-        #a1.s.stop()
     except KeyboardInterrupt:
         a1.port.close()
         cl()
     curScore = a1.correctNotes/(a1.correctNotes + a1.incorrectNotes)
     addToPracticeScore(curScore)
     lastScore = str(curScore)
-    # print("Score: " + str(curScore))
-    # fileName = os.path.abspath(os.path.join('.', 'Scores/', (tab_name + '.txt')))
-    # scores = []
-    # # open file and read the content in a list
-    # with open(fileName, 'r+') as filehandle:  
-    #     scores = [float(score.rstrip()) for score in filehandle.readlines()]
-    # scores.append(curScore)
-    # scores = sorted(scores)
-    # with open(fileName, 'w+') as filehandle:  
-    #     filehandle.writelines("%s\n" % score for score in scores)            
-# onOffFunction('{0:05b}'.format(1), '{0:03b}'.format(3))
 time.sleep(2) #waiting the initialization...

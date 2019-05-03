@@ -1,6 +1,8 @@
 import re
 import os
 
+# remove all extranious stuff from online tabs
+# will leave only what can be used by the application
 def cleanTab(file1, file2):
 	with open(file1, 'r') as inp, open(file2, 'w') as out:
 		data = inp.read()

@@ -8,7 +8,7 @@ sys.path.append(lib_path)
 
 from Lights import *
 
-# Parses and creates data structure
+# parse tab to be read into the arduino
 def parser(file):
 
     line = ""
@@ -41,7 +41,6 @@ def parser(file):
     file = lib_path = os.path.abspath(os.path.join('.', 'data/Tabs', file))
     inpt = open(file,"r")
     l = list(inpt.read())
-    # print(l)
     r = range(len(l))
     rIter = iter(r)
     for i in rIter:
@@ -82,6 +81,5 @@ def parser(file):
                 else:
                     fret = int(l[i])
                 song[string][measureCount[string]][note][fret] = True
-                # print (string + " " + str(measureCount[string]) + " " + str(note) + " " + str(fret) + " " + str(song[string][measureCount[string]][note][fret]))
             note += 1
     return song

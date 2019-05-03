@@ -8,8 +8,8 @@ sys.path.append(lib_path)
 
 from Lights import *
 
-# Parses and creates data structure
-def chordParser(tab):
+# parse chord to be read into arduino
+def chordParser(chord):
 
     line = ""
     song = {}
@@ -37,7 +37,7 @@ def chordParser(tab):
     measureCount["A"] = 1
     measureCount["E"] = 1
 
-    l = list(tab[0])
+    l = list(chord[0])
     print(l)
     r = range(len(l))
     rIter = iter(r)
