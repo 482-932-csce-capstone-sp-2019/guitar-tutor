@@ -3,42 +3,46 @@ This is a prototype of our guitar tutoring app.
 
 The app is implemented in Kivy and python 3.
 
-Current Contributions: Gerardo Mares II
+Contributions: 
+Gerardo Mares II
+Noe Balli IV
+Hunter Stewart
+Jacob Jackson
 
-Gerardo Mares II Notes:
+Sources:
+
+Tuner:
+	Credits: 
+		GitHub user handles: mzucker, michniewicz
+		URL: https://github.com/michniewicz/python-tuner/graphs/contributors
 
 '''
 
+# import libraries 
 import builtins
 import random
 import time
-
 import threading
-
-# Used to get directory to different 'screens'
 import os
-from os.path import dirname, join
-# Defalut kivy app object, we need this to make kivy work
-from kivy.app import App
-# Use properties to link variables from the python file to the kivy screens
-from kivy.properties import NumericProperty, StringProperty, BooleanProperty, ListProperty, ObjectProperty
-# Use to manage screen switching
-from kivy.uix.screenmanager import Screen
-# Use builder to run kivy code inside of python
-from kivy.lang import Builder
-# Glob is a module that finds all the path names matching a specified pattern
 import glob
-# Use this to get names of tabs and paste them to buttons
 import re
-
 import numpy as np
 import pyaudio
+import threading
+import time
+import sys
+import shutil
 
-# Use this for making buttons dynamically
+# import  directories for file reading
+from os.path import dirname, join
+
+# imports from kivy to get an working app
+from kivy.app import App
+from kivy.properties import NumericProperty, StringProperty, BooleanProperty, ListProperty, ObjectProperty
+from kivy.uix.screenmanager import Screen
+from kivy.lang import Builder
 from kivy.uix.button import Button
 from kivy.uix.label import Label
-
-
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.label import Label
 from kivy.factory import Factory
@@ -49,12 +53,8 @@ from kivy.core.window import Window
 from kivy.animation import Animation
 from kivy.uix.scrollview import ScrollView
 
-import threading
-from queue import Queue
-import time
 
-import sys
-import shutil
+# Import folders with helper functions
 a = os.path.abspath(os.path.join('.','Arduino'))
 sys.path.append(a)
 b = os.path.abspath(os.path.join('.', 'Parsing'))
@@ -75,13 +75,23 @@ from cleanTab import cleanTab
 # made it a global to reflect this
 t = threading.Thread()
 
+# lock used to protect the challenge going variable in the app
+challengeGoingLock = threading.Lock()
+
+# global for stopping the chord game
 playingGame = False
 
+# global that is set when a tab starts
+startedATab = False
 
-# scroller for scrolling
-#scroll = ScrollView()
-# gets a random chord name from a list of all implemented chords
-# used for simon says game
+# global so checking if tuner is turned on or off
+Done_Tuning = False
+
+# global for checking is a chord has been played
+practiceChordClock = 0
+
+
+# gets a random chord name from a list of all implemented chords for chord game
 def getRandomChord():
 	possibleChords = [ac,a7c,amc,am7c,amaj7c,bfc,b7c,bmc,cc,c7c,cmaj7c,dc,d7c,dmc,dm7c,dmaj7c,ec,e7c,emc,em7c,fc,fmaj7c,gc,g7c]
 	return random.choice(possibleChords)
@@ -98,24 +108,18 @@ class OneMoreNoteWidget(Widget):
 		if not t.isAlive() and app.index == app.oneMoreNoteIdx:
 			app.go_screen(app.homeScreenIdx)
 
+
+# Loading screen widget for loading tab file
 class LoadDialog(FloatLayout):
     load = ObjectProperty(None)
     cancel = ObjectProperty(None)
 
-# lock used to protect the challenge going variable in the app
-challengeGoingLock = threading.Lock()
-
+# This is our main application that holds all screens
 class GuitarApp(App):
-	loadfile = ObjectProperty(None)
-	savefile = ObjectProperty(None)
-	text_input = ObjectProperty(None)
-
 	# the string name of the app the system is currently playing
 	currentlyPlayingTab = StringProperty()
-
 	# a boolean that displays whether or not the user is still playing the chord practice game
 	challengeGoing = BooleanProperty(False)
-	
 	# Use index to cycle through screens
 	index = NumericProperty(-1)
 	# Keep all screens in a list to access later
@@ -158,48 +162,44 @@ class GuitarApp(App):
 		# Initialize first screen (index 0)
 		self.go_screen(self.homeScreenIdx)
 
+	def clear(self):
+		cl()	
+	
 	#Testing with showing source code
-	def toggle_source_code(self,*args):
+	def toggle_tab_viewer(self,*tab_name):
 		height = self.root.height * .5
 		
 		Animation(height=height, d=.3, t='out_quart').start(
 			self.root.ids.sv)
 		
-		self.update_sourcecode(args[0])
+		self.update_tab_viewer(tab_name[0])
 
-	def clear(self):
-		cl()
-
-	def quit_source_code(self, *args):
+	def quit_tab_viewer(self, *args):
 		Animation(height=0, d=.3, t='out_quart').start(self.root.ids.sv)
 		
-	def read_sourcecode(self, *args):
+	def read_tab(self, *tab_name):
 		fn = self.available_screens[self.index]
 		curdir = dirname(__file__)
-		fn = args[0].text
+		fn = tab_name[0].text
 		fn = join(curdir, 'data', 'tabs', '{}.txt'.format(fn))
 
 		with open(fn) as fd:
 			# get length of a single line to get horizontal scroll
 			line = fd.readline()
 			# 9.1 is a magic number used to get the right width for horizontal scrolling
-			# Max tab length is 1800
 			self.root.ids.sourcecode.width = 9.1 * len(line)
-			fd.seek(0)
 			
+			# reset cursor for reading
+			fd.seek(0)			
 			# return actual tab to display
 			return fd.read()
 	
-	def update_sourcecode(self, *args):
-		self.root.ids.sourcecode.text = self.read_sourcecode(args[0])
+	def update_tab_viewer(self, *args):
+		self.root.ids.sourcecode.text = self.read_tab(args[0])
 		self.root.ids.sv.scroll_y = 1
 		self.root.ids.sv.scroll_x = 0
-		
-		# animate scroll
-		#scroll = self.root.ids.sv
-		#move = Animation(scroll_x=1, duration=50.0)
-		#move.start(scroll)
 	
+	# tell application to switch to another screen
 	def go_screen(self, idx):
 		cl()
 		if(t.isAlive() and self.index != self.oneMoreNoteIdx and self.index != self.tabLibraryIdx and self.index != self.challengeIdx):
@@ -211,10 +211,6 @@ class GuitarApp(App):
 		if(self.index != idx):
 			self.index = idx
 			self.root.ids.sm.switch_to(self.load_screen(idx), direction="left")
-		# if(t.isAlive() and self.index == self.oneMoreNoteIdx):
-		# 	return
-		# self.index = idx
-		# self.root.ids.sm.switch_to(self.load_screen(idx), direction="left")
 
 	# returns a screen
 	# might be modified to search for next screen... maybe
@@ -234,16 +230,19 @@ class GuitarApp(App):
 	def stop_tuner(*args):
 		set_Done_Tuning(True)
 		
+	# serves as a loading screen when starting tuner
 	def do_tuning(self):
 		tuner_page = self.screens[5].layout
 		tuner_page.clear_widgets()
 		
-		button = Label()
-		button.text = 'Starting Tuner...'
-		button.font_size = '20dp'
-		button.bind(on_release = app.start_tuner)
-		tuner_page.add_widget(button)
+		loadingtext = Label()
+		loadingtext.text = 'Starting Tuner...'
+		loadingtext.font_size = '20dp'
+		loadingtext.bind(on_release = app.start_tuner)
+		tuner_page.add_widget(loadingtext)
 		
+	# this is the front end for the tuner, it displays whether the user should tune up or down
+	# along with other helpful metrics
 	def update_tuner(self, note_name, cents):
 		tuner_page = self.screens[5].layout
 		tuner_page.clear_widgets()
@@ -314,6 +313,7 @@ class GuitarApp(App):
 		# We can use this to open the correct file
 		file_names = sorted(file_names)
 
+		# make score files for each tab file, append if already exists
 		for name in file_names:
 			fileName = os.path.abspath(os.path.join('.', 'Scores/', (name + '.txt')))
 			f = open(fileName, 'a')
@@ -331,7 +331,7 @@ class GuitarApp(App):
 			button.size_hint = (.2, .2)
 			# Add function to button
 			button.bind(on_release = play_tab)
-			button.bind(on_release = self.toggle_source_code)
+			button.bind(on_release = self.toggle_tab_viewer)
 			# Add button!
 			tab_page.add_widget(button)
 	
@@ -342,7 +342,6 @@ class GuitarApp(App):
 			cl()
 			global startedATab
 			startedATab = False
-			#app.toggle_source_code()
 			app.go_screen(self.oneMoreNoteIdx)
 
 	# this function stops the chord practice game
@@ -403,14 +402,8 @@ class GuitarApp(App):
 	def getPlayingChallenge(self):
 		challengeGoingLock.acquire(True)
 		return self.challengeGoing
-
-
-		
-
 app = GuitarApp()
 
-# global that is set when a tab starts
-startedATab = False
 
 # this clock repeatedly checks whether the user has completed a song
 # once the user completes a song, it just moves to the scoreboard index
@@ -419,7 +412,7 @@ def stopPlayingTabCheck(dt):
 	global startedATab
 	if startedATab and not t.isAlive() and app.index == app.tabLibraryIdx:
 		startedATab = False
-		app.quit_source_code()
+		app.quit_tab_viewer()
 		app.go_screen(app.scoreboardIdx)
 		app.screens[app.scoreboardIdx].ids.LastScore.text = app.getLastScore()
 		app.screens[app.scoreboardIdx].ids.Score1.text = '1. ' + app.get5Scores()[0]
@@ -427,9 +420,9 @@ def stopPlayingTabCheck(dt):
 		app.screens[app.scoreboardIdx].ids.Score3.text = '3. ' + app.get5Scores()[2]
 		app.screens[app.scoreboardIdx].ids.Score4.text = '4. ' + app.get5Scores()[3]
 		app.screens[app.scoreboardIdx].ids.Score5.text = '5. ' + app.get5Scores()[4]
-
 Clock.schedule_interval(stopPlayingTabCheck, .1)
 
+# This is the template for each "screen" in our application
 class GuitarScreen(Screen):
 	fullscreen = BooleanProperty(False)
 
@@ -442,11 +435,13 @@ class GuitarScreen(Screen):
 	def dismiss_popup(self):
 		self._popup.dismiss()
 
-	def show_load(self):
+	# displays the file browser
+	def show_load_tab_screen(self):
 		content = LoadDialog(load=self.load, cancel=self.dismiss_popup)
 		self._popup = Popup(title="Load file", content=content, size_hint=(0.9, 0.9))
 		self._popup.open()
 
+	# check if txt file is valid, if so then load the txt file as a tab 
 	def load(self, path, filename):
 		name = os.path.split(os.path.join(path, filename[0]))[-1]
 		# will not load if tab is too long!
@@ -455,6 +450,7 @@ class GuitarScreen(Screen):
 			content = Button(text='Success')
 		else:
 			content = Button(text='Tab too long!')
+		
 		popup = Popup(title='Result', content=content,  size_hint=(None, None), size=(200, 200), auto_dismiss=False)		
 		content.bind(on_press=popup.dismiss)
 		popup.open()
@@ -478,12 +474,10 @@ def play_tab(tab, *args):
 	t.start()
 	startedATab = True
 	app.currentlyPlayingTab = tab.text
-	#app.go_screen(app.playingTabIdx)
 
-practiceChordClock = 0
 
 # this is a clock that runs every tenth of a second once the chord practice game is selected
-# this function checks if it is time to move onto the net chord in the challenge
+# this function checks if it is time to move onto the next chord in the challenge
 def updateChordPractice(dt):
 	global practiceChordClock
 	global startedATab
@@ -495,20 +489,11 @@ def updateChordPractice(dt):
 		#update text on screen
 		#update score
 		app.play_tab_chord_practice()
-
 Clock.schedule_interval(updateChordPractice, .1)
 
 	
 ########################TUNER######################################	
-'''
-	Credits: 
-		GitHub user handles: mzucker, michniewicz
-		URL: https://github.com/michniewicz/python-tuner/graphs/contributors
-		
-'''
-
 #! /usr/bin/env python
-
 NOTE_MIN = 40       # E2
 NOTE_MAX = 64       # E4
 FSAMP = 22050       # Sampling frequency in Hz
@@ -526,7 +511,6 @@ FREQ_STEP = float(FSAMP) / SAMPLES_PER_FFT
 
 ######################################################################
 # For printing out notes
-
 NOTE_NAMES = 'E F F# G G# A A# B C C# D D#'.split()
 
 
@@ -543,22 +527,15 @@ def number_to_freq(n): return 329.63 * 2.0**((n - 64) / 12.0)
 def note_name(n):
     return NOTE_NAMES[n % NOTE_MIN % len(NOTE_NAMES)] + str(int(n / 12 - 1))
 
-######################################################################
-# Ok, ready to go now.
-
-# Get min/max index within FFT of notes we care about.
-# See docs for numpy.rfftfreq()
-
-
+	
 def note_to_fftbin(n): return number_to_freq(n) / FREQ_STEP
 
-
-Done_Tuning = False
 
 def set_Done_Tuning(state):
 	global Done_Tuning
 	Done_Tuning = state
 
+	
 def tune():
 
 	imin = max(0, int(np.floor(note_to_fftbin(NOTE_MIN - 1))))
@@ -579,10 +556,6 @@ def tune():
 
 	# Create Hanning window function
 	window = 0.5 * (1 - np.cos(np.linspace(0, 2 * np.pi, SAMPLES_PER_FFT, False)))
-
-	# Print initial text
-	#print('sampling at', FSAMP, 'Hz with max resolution of', FREQ_STEP, 'Hz')
-	#print()
 
 	global Done_Tuning
 	
@@ -608,10 +581,9 @@ def tune():
 
 		if num_frames >= FRAMES_PER_FFT:
 			app.update_tuner(note_name(n0),n - n0)
-			#print('number {:7.2f} freq: {:7.2f} Hz     note: {:>3s} {:+.2f}'.format(n,
-			#																		freq, note_name(n0), n - n0))
 	stream.close()
 
+# Run the application
 if __name__ == '__main__':
 	app.run()
 	cl()
